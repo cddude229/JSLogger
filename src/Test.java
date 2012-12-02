@@ -21,6 +21,7 @@ public class Test extends AbstractHandler {
         baseRequest.setHandled(true);
         response.getWriter().println("<h1>Hello World</h1>");
         logger.info(request.getPathInfo());
+        logger.info(request.getQueryString());
     }
 
     public static void main(String[] args) throws Exception {
