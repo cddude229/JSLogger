@@ -1,4 +1,4 @@
-package com.awesomecat.jslogger;
+package com.awesomecat.jslogger.expression;
 
 import java.io.Serializable;
 
