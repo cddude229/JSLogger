@@ -38,4 +38,8 @@ public abstract class ExpressionStore {
 	 * @param expression
 	 */
 	abstract public void storeRegularExpression(String id, Expression expression);
+	
+	abstract public void deleteOldExpressions();
+	
+	abstract public void deleteExpression(String id);
 }

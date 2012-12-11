@@ -14,4 +14,16 @@ public class SQLiteStore extends ExpressionStore {
 	public void storeRegularExpression(String id, Expression exp) {
 		// TODO: Store this expression in the database
 	}
+
+	@Override
+	public void deleteOldExpressions() {
+		// TODO: Clean out any expressions that might have expired
+		
+	}
+
+	@Override
+	public void deleteExpression(String id) {
+		// TODO: Delete a specific expression
+		
+	}
 }

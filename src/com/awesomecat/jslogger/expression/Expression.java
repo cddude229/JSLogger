@@ -38,17 +38,29 @@ public class Expression implements Serializable {
 	 */
 	public final String expression;
 	
+	/**
+	 * Is this a run-once log line?
+	 */
+	public final boolean runOnce;
+	
+	/**
+	 * The size of retained windows
+	 */
+	public final int windowSize;
+	
 	public Expression(){
-		this(null, null, null, 0, null);
+		this(null, null, null, 0, null, true, 2);
 	}
 	
-	public Expression(String sessionIP, String sessionCookie, String sessionIdentifier, int validDuration, String expression){
+	public Expression(String sessionIP, String sessionCookie, String sessionIdentifier, int validDuration, String expression, boolean runOnce, int windowSize){
 		this.sessionIP = sessionIP;
 		this.sessionCookie = sessionCookie;
 		this.sessionIdentifier = sessionIdentifier;
 		this.validDuration = validDuration;
 		this.creationTime = getCurrentTime();
 		this.expression = expression;
+		this.runOnce = runOnce;
+		this.windowSize = windowSize;
 	}
 	
 	public static long getCurrentTime(){
