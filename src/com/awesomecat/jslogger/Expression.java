@@ -1,6 +1,13 @@
 package com.awesomecat.jslogger;
 
-public class Expression {
+import java.io.Serializable;
+
+public class Expression implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8127473370473769283L;
+
 	/**
 	 * Associated IP for this expression
 	 */
@@ -24,7 +31,7 @@ public class Expression {
 	/**
 	 * Time of creation
 	 */
-	public final int creationTime;
+	public final long creationTime;
 	
 	/**
 	 * The actual regular expression
@@ -40,8 +47,12 @@ public class Expression {
 		this.sessionCookie = sessionCookie;
 		this.sessionIdentifier = sessionIdentifier;
 		this.validDuration = validDuration;
-		this.creationTime = 0; // TODO: Make this get current time
+		this.creationTime = getCurrentTime();
 		this.expression = expression;
+	}
+	
+	public static long getCurrentTime(){
+		return java.util.Calendar.getInstance().getTimeInMillis();
 	}
 
 }
