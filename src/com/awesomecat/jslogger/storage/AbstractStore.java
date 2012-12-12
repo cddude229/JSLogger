@@ -1,0 +1,140 @@
+package com.awesomecat.jslogger.storage;
+
+import java.util.Random;
+
+
+public abstract class AbstractStore {
+
+	public static final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+	public static final int idLength = 10; // TODO: @Chris Make this load from configuration
+
+
+
+
+
+	////////////////////////////////////////////////////////////////////
+	// Expressions
+	////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Returns the expression for the given id.
+	 * @param id
+	 * @return Returns null if nothing found
+	 */
+	abstract public Expression getExpression(int id);
+
+	/**
+	 * Stores a new expression and returns new ID.  If expression matches existing one, returns old ID
+	 * @param expression
+	 * @return Returns the expression ID
+	 */
+	abstract public int storeExpression(Expression expression);
+
+
+
+
+
+	////////////////////////////////////////////////////////////////////
+	// Sessions
+	////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Gets a session id for us, given the type of the session and the value to lookup on. Will generate a new ID if no match found
+	 * @param type
+	 * @param value
+	 * @return
+	 */
+	abstract public int getSessionId(SessionType type, String value);
+
+
+
+
+
+	////////////////////////////////////////////////////////////////////
+	// Associated IDs
+	////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Deletes any associated ID deemed to be expired
+	 */
+	abstract public void deleteExpiredAssociatedIds();
+
+	/**
+	 * Deletes an associated ID from the store
+	 * @param id
+	 */
+	abstract public void deleteAssociatedId(String id);
+
+	/**
+	 * Returns a set of associated IDs that match the session and expression IDs
+	 * @param sessionId
+	 * @param expressionId
+	 * @return May be empty
+	 */
+	abstract public String[] getAssociatedIds(int sessionId, int expressionId);
+
+	/**
+	 * Creates a new associated ID for this case
+	 * @param sessionId
+	 * @param expressionId
+	 * @return
+	 */
+	abstract public String createAssociatedId(int sessionId, int expressionId);
+
+	/**
+	 * Generates a new, unused ID.  No guarantee to be unique, but typically 1 / (64^10) probability.
+	 * @return The new ID. Contains A-Za-z0-9-_
+	 */
+	final public String generateAssociatedId(){
+		// NOTE: We're going to assume no conflicts because of how unlikely they are.  1 / (64^10) is the probability
+		Random r = new Random();
+		int i;
+		String id = "";
+		for(int j=0;j<idLength;j++){
+			i = r.nextInt(characters.length());
+			id += characters.substring(i, i+1);
+		}
+		return id;
+	}
+
+
+
+
+
+	////////////////////////////////////////////////////////////////////
+	// Combining it all
+	////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Determines if the associated ID matches the session and expression IDs
+	 * @param associatedId
+	 * @param sessionId
+	 * @param expressionId
+	 * @return
+	 */
+	public boolean matchAssociatedId(String associatedId, int sessionId, int expressionId){
+		return matchAssociatedId(associatedId, sessionId, expressionId, false);
+	}
+
+	/**
+	 * Determines if the associated ID  matches the session and expression IDs. If deleteOnDiscovery=true, will remove from store
+	 * @param associatedId
+	 * @param sessionId
+	 * @param expressionId
+	 * @param deleteOnDiscovery Remove the associatedID from the store after match is confirmed
+	 * @return
+	 */
+	public boolean matchAssociatedId(String associatedId, int sessionId, int expressionId, boolean deleteOnDiscovery){
+		String[] ids = getAssociatedIds(sessionId, expressionId);
+		for(String s : ids){
+			if(s.equals(associatedId)){
+				if(deleteOnDiscovery){
+					deleteAssociatedId(associatedId);
+				}
+				
+				return true;
+			}
+		}
+		return false;
+	}
+}
