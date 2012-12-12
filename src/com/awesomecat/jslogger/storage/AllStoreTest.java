@@ -15,7 +15,7 @@ public class AllStoreTest {
 	}
 	
 	/*
-	TODO: @Chris: When SQLiteStore is done, enable this test
+	TODO: @Chris When SQLiteStore is done, enable this test
 	
 	@Test
 	public void testSQLiteStore() throws Exception {
@@ -109,5 +109,7 @@ public class AllStoreTest {
 		);
 
 	}
+	
+	// TODO: @Chris: Update the tests above to include the new getExpresionFromAssociatedId methods
 
 }

@@ -24,6 +24,20 @@ public abstract class AbstractStore {
 	abstract public Expression getExpression(int id);
 
 	/**
+	 * Gets an expression when given an associated id
+	 * @param associatedId
+	 * @return Null if no match
+	 */
+	abstract public Expression getExpressionFromAssociatedId(String associatedId);
+
+	/**
+	 * Gets an expression id when given an associated id
+	 * @param associatedId
+	 * @return -1 if no match
+	 */
+	abstract public int getExpressionIdFromAssociatedId(String associatedId);
+
+	/**
 	 * Stores a new expression and returns new ID.  If expression matches existing one, returns old ID
 	 * @param expression
 	 * @return Returns the expression ID
