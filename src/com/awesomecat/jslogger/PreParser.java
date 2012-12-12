@@ -10,8 +10,7 @@ public class PreParser {
 	/**
 	 * Allowed flags by our regular expression evaluator
 	 */
-	public static final String allowedFlags = "gim";
-	// TODO: @Chris: Update the allowed flags
+	public static final String allowedFlags = "sim";
 
 	/**
 	 * Is the potential flag valid?
@@ -20,6 +19,25 @@ public class PreParser {
 	 */
 	public static boolean isValidFlag(String potentialFlag){
 		return potentialFlag.length() == 1 && allowedFlags.indexOf(potentialFlag) >= 0;
+	}
+
+	/**
+	 * Converts the string flags to their pattern constants
+	 * @param flags
+	 * @return
+	 */
+	public static int convertFlagsToConstants(ArrayList<String> flags){
+		int ret = 0;
+		for(String s : flags){
+			if(s.equals("i")){
+				ret |= Pattern.CASE_INSENSITIVE;
+			} else if(s.equals("m")){
+				ret |= Pattern.MULTILINE;
+			} else {
+				ret |= Pattern.DOTALL;
+			}
+		}
+		return ret;
 	}
 
 	/**
@@ -54,7 +72,7 @@ public class PreParser {
     		  return false;
     	}
     	int flag_index=0;
-    	ArrayList flags = new ArrayList();
+    	ArrayList<String> flags = new ArrayList();
     	for(int i= (re.length()-1);i>=0; i-- ){
     		String cur_char = re.substring(i,i+1);
     		System.out.println("cur_char: "+cur_char); //DEBUG
@@ -117,7 +135,7 @@ public class PreParser {
     		}
     	}
         try {
-        	int flag_value = convertFlagstoConstants(flags);
+        	int flag_value = convertFlagsToConstants(flags);
             Pattern.compile(no_slash, flag_value); //doesn't handle flags
         } catch (PatternSyntaxException exception) {
             return false;
@@ -135,4 +153,17 @@ public class PreParser {
         return false;
       }
 
+    /**
+     * Determine if inputted size is valid.
+     * @param input
+     * @return
+     */
+    public static boolean validWindowSize(String input){
+    	try {
+	    	int i = Integer.parseInt(input);
+	    	return i > 0;
+    	} catch (Exception e){
+    		return false;
+    	}
+    }
 }

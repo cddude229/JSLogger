@@ -67,6 +67,17 @@ public class PreParserTest {
 			);
 		}
 	}
-	
 
+	@Test
+	public void testValidWindowSize() throws Exception {
+		assertTrue(PreParser.validWindowSize("1"));
+		assertTrue(PreParser.validWindowSize("10"));
+		assertTrue(PreParser.validWindowSize("100"));
+		assertTrue(PreParser.validWindowSize("010"));
+		assertFalse(PreParser.validWindowSize("hi"));
+		assertFalse(PreParser.validWindowSize("0"));
+		assertFalse(PreParser.validWindowSize("-1"));
+		assertFalse(PreParser.validWindowSize("0.5"));
+		assertFalse(PreParser.validWindowSize("1.5"));
+	}
 }
