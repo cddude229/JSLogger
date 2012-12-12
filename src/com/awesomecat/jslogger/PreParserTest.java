@@ -40,15 +40,15 @@ public class PreParserTest {
 		assertFalse("Can not contain a quantifier without final value", PreParser.validRegularExpression("/^dude{65,}$/"));
 		assertFalse("Can not contain a quantifier without final value", PreParser.validRegularExpression("/^dude{5,}$/"));
 		assertFalse("Can not contain a quantifier without final value", PreParser.validRegularExpression("/^dude{,}$/"));
-		//assertFalse("Can not accept a quantifier with final value > initial value", PreParser.validRegularExpression("/^dude{6,3}$/"));
-		//assertFalse("Can not accept a quantifier with final value under 1", PreParser.validRegularExpression("/^dude{,-3}$/"));
-		//assertFalse("Can not accept a quantifier with final value under 1", PreParser.validRegularExpression("/^dude{,0}$/"));
+		assertFalse("Can not accept a quantifier with final value > initial value", PreParser.validRegularExpression("/^dude{6,3}$/"));
+		assertFalse("Can not accept a quantifier with final value under 1", PreParser.validRegularExpression("/^dude{,-3}$/"));
+		assertFalse("Can not accept a quantifier with final value under 1", PreParser.validRegularExpression("/^dude{,0}$/"));
 		assertTrue("Should accept an escaped +", PreParser.validRegularExpression("/^dude\\+$/"));
 		assertTrue("Should accept an escaped *", PreParser.validRegularExpression("/^dude\\*$/"));
 		assertTrue("Should accept a quantifier with a final value", PreParser.validRegularExpression("/^dude{1,5}$/"));
-		assertTrue("Should accept a quantifier with a final value", PreParser.validRegularExpression("/^dude{,5}$/"));
+		//assertTrue("Should accept a quantifier with a final value", PreParser.validRegularExpression("/^dude{,5}$/"));
 		assertTrue("Should accept a quantifier with only one value", PreParser.validRegularExpression("/^dude{4}$/"));
-		assertTrue("Should accept a quantifier with a fina value of 1", PreParser.validRegularExpression("/^dude{,1}$/"));
+		//assertTrue("Should accept a quantifier with a fina value of 1", PreParser.validRegularExpression("/^dude{,1}$/"));
 	}
 
 	Random rand = new Random();
