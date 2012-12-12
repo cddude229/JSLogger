@@ -1,12 +1,13 @@
 package com.awesomecat.jslogger;
 
+import java.util.regex.Pattern;
+
 public class PreParser {
 	
 	/**
 	 * Allowed flags by our regular expression evaluator
 	 */
-	public static final String allowedFlags = "gim";
-	// TODO: @Chris: Update the allowed flags
+	public static final String allowedFlags = "sim";
 
 	/**
 	 * Is the potential flag valid?
@@ -15,6 +16,25 @@ public class PreParser {
 	 */
 	public static boolean isValidFlag(String potentialFlag){
 		return potentialFlag.length() == 1 && allowedFlags.indexOf(potentialFlag) >= 0;
+	}
+
+	/**
+	 * Converts the string flags to their pattern constants
+	 * @param flags
+	 * @return
+	 */
+	public static int convertFlagsToConstants(String[] flags){
+		int ret = 0;
+		for(String s : flags){
+			if(s.equals("i")){
+				ret |= Pattern.CASE_INSENSITIVE;
+			} else if(s.equals("m")){
+				ret |= Pattern.MULTILINE;
+			} else {
+				ret |= Pattern.DOTALL;
+			}
+		}
+		return ret;
 	}
 
 	/**
