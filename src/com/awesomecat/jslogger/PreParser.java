@@ -6,6 +6,7 @@ public class PreParser {
 	 * Allowed flags by our regular expression evaluator
 	 */
 	private static final String allowedFlags = "gim";
+	// TODO: @Chris: Update the allowed flags
 
 	/**
 	 * Is the potential flag valid?
@@ -21,7 +22,7 @@ public class PreParser {
 	 * @param re Format as: /^ABC, 123$/gim
 	 * @return
 	 */
-    public boolean validRegularExpression(String re) {
+    public static boolean validRegularExpression(String re) {
         // TODO: Write our regular expression evaluator
         /*
          * Steps before building:
@@ -36,6 +37,7 @@ public class PreParser {
          * 6) Strip anchors.  At this point, we have our entire regular expression to validate.
          * 7) We need to not allow huge wildcards... i.e. we should ban the use of *, +, and {#,} (this last one leaves open arbitrarily long messages)
          * 		NOTE: We don't ban {,#} because they are willingly implementing a max limit
+         * 		NOTE2: Be careful to not ban \* or \+... those are valid escaped characters
          * 
          * 8) At this point, I think everything should be valid and not overly inefficient
          * 
