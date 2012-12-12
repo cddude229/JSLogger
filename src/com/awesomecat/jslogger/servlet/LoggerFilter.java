@@ -34,9 +34,9 @@ public final class LoggerFilter implements Filter {
 			}
 
 			// Ok, write to our log file
-			JavaScriptLogger.handleLogging(request, sessionType, sessionValue);
+			boolean out = JavaScriptLogger.handleLogging(request, sessionType, sessionValue);
 
-			response.getWriter().write("true");
+			response.getWriter().write(String.valueOf(out));
 		} else {
 			chain.doFilter(request, response);
 		}

@@ -17,24 +17,24 @@ import com.awesomecat.jslogger.storage.SessionType;
 public class JavaScriptLogger {
     private static Logger logger = Logger.getLogger("jslogger");
     private static AbstractStore store = new HashMapStore();
-    private static Level jsLogLevel = Level.DEBUG;
+    private static Level jsLogLevel = Level.ERROR;
     
 
     
-    public static void handleLogging(ServletRequest request, SessionType sessionType, String sessionValue){
+    public static boolean handleLogging(ServletRequest request, SessionType sessionType, String sessionValue){
     	// No null values allowed
-    	if(request == null) return;
+    	if(request == null) return false;
 
     	// Get message and associatedId. Exit if null
     	String message = request.getParameter("message");
     	String associatedId = request.getParameter("logid");
     	
-    	handleLogging(message, associatedId, sessionType, sessionValue);
+    	return handleLogging(message, associatedId, sessionType, sessionValue);
     }
 
-    public static void handleLogging(String message, String associatedId, SessionType sessionType, String sessionValue){
+    public static boolean handleLogging(String message, String associatedId, SessionType sessionType, String sessionValue){
         // No null values allowed
-    	if(message == null || associatedId == null || sessionType == null || sessionValue == null) return;
+    	if(message == null || associatedId == null || sessionType == null || sessionValue == null) return false;
 
     	// Get our sessionId
     	int sessionId = store.getSessionId(sessionType, sessionValue);
@@ -44,18 +44,21 @@ public class JavaScriptLogger {
 
     	// Validate that it exists still.
     	Expression e = store.getExpression(expressionId);
+    	if(e == null) return false;
     	boolean deleteOnDiscovery = e.runOnce;
     	if(!store.matchAssociatedId(associatedId, sessionId, expressionId, deleteOnDiscovery)){
-    		return; // ID did not match
+    		return false; // ID did not match
     	}
    
     	// At this point, the associated ID has been matched.  Let's see if the message matches the regular expression!
     	Pattern p = buildPatternFromExpression(e.expression);
     	Matcher m = p.matcher(message);
-    	if(!m.find()) return; // No valid match
+    	if(!m.find()) return false; // No valid match
     	
     	// Ok, lastly, let's log the message.
     	logger.log(jsLogLevel, message);
+    	
+    	return true;
     }
     
     private static Pattern buildPatternFromExpression(String exp){
