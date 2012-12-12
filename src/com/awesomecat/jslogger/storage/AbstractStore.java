@@ -30,6 +30,17 @@ public abstract class AbstractStore {
 	 */
 	abstract public int storeExpression(Expression expression);
 
+	/**
+	 * Returns the window size for a given expression id
+	 * @param expressionId
+	 * @return -1 if invalid expression
+	 */
+	public int getWindowSize(int expressionId){
+		Expression exp = getExpression(expressionId);
+		if(exp == null) return -1;
+		return exp.windowSize;
+	}
+
 
 
 
@@ -80,6 +91,13 @@ public abstract class AbstractStore {
 	 * @return
 	 */
 	abstract public String createAssociatedId(int sessionId, int expressionId);
+
+	/**
+	 * Deletes the oldest ID matching this.  This is because of the sliding window
+	 * @param sessionId
+	 * @param expressionId
+	 */
+	abstract public void deleteOldestAssociatedId(int sessionId, int expressionId);
 
 	/**
 	 * Generates a new, unused ID.  No guarantee to be unique, but typically 1 / (64^10) probability.

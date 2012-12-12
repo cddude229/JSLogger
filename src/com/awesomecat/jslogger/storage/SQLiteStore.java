@@ -37,4 +37,8 @@ public class SQLiteStore extends AbstractStore {
 		return null;
 	}
 
+	@Override
+	public void deleteOldestAssociatedId(int sessionId, int expressionId) {
+	}
+
 }

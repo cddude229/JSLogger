@@ -49,4 +49,44 @@ public class Expression implements Serializable {
 		return java.util.Calendar.getInstance().getTimeInMillis();
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (creationTime ^ (creationTime >>> 32));
+		result = prime * result
+				+ ((expression == null) ? 0 : expression.hashCode());
+		result = prime * result + (runOnce ? 1231 : 1237);
+		result = prime * result + validDuration;
+		result = prime * result + windowSize;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Expression other = (Expression) obj;
+		if (creationTime != other.creationTime)
+			return false;
+		if (expression == null) {
+			if (other.expression != null)
+				return false;
+		} else if (!expression.equals(other.expression))
+			return false;
+		if (runOnce != other.runOnce)
+			return false;
+		if (validDuration != other.validDuration)
+			return false;
+		if (windowSize != other.windowSize)
+			return false;
+		return true;
+	}
+
+	
+
 }
