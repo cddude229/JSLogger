@@ -8,7 +8,7 @@ public class PreParser {
 	/**
 	 * Allowed flags by our regular expression evaluator
 	 */
-	private static final String allowedFlags = "gim";
+	public static final String allowedFlags = "gim";
 	// TODO: @Chris: Update the allowed flags
 
 	/**

@@ -1,26 +1,44 @@
 package com.awesomecat.jslogger.storage;
 
 
-public class SQLiteStore extends ExpressionStore {
+// TODO: @Chris Implement SQLiteStore for when we need static to be stored over time and survive a restart
+public class SQLiteStore extends AbstractStore {
 
 	@Override
-	public Expression getRegularExpression(String id) {
-		// TODO: Retrieve this expression from the database
+	public Expression getExpression(int id) {
 		return null;
 	}
 
 	@Override
-	public void storeRegularExpression(String id, Expression exp) {
-		// TODO: Store this expression in the database
+	public int storeExpression(Expression expression) {
+		return 0;
 	}
 
 	@Override
-	public void deleteOldExpressions() {
-		// TODO: Clean out any expressions that might have expired
+	public int getSessionId(SessionType type, String value) {
+		return 0;
 	}
 
 	@Override
-	public void deleteExpression(String id) {
-		// TODO: Delete a specific expression
+	public void deleteExpiredAssociatedIds() {
 	}
+
+	@Override
+	public void deleteAssociatedId(String id) {
+	}
+
+	@Override
+	public String[] getAssociatedIds(int sessionId, int expressionId) {
+		return null;
+	}
+
+	@Override
+	public String createAssociatedId(int sessionId, int expressionId) {
+		return null;
+	}
+
+	@Override
+	public void deleteOldestAssociatedId(int sessionId, int expressionId) {
+	}
+
 }
