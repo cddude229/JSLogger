@@ -5,8 +5,8 @@ import java.util.Random;
 
 public abstract class AbstractStore {
 
-	public static final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
-	public static final int idLength = 10; // TODO: @Chris Make this load from configuration
+	private static final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+	private static final int idLength = 10; // TODO: @Chris Make this load from configuration
 
 
 
