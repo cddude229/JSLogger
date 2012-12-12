@@ -32,7 +32,7 @@ public class PreParserTest {
 		System.out.println("s: "+ s); //DEBUG
 		assertTrue("Valid flag ("+s+") marked as invalid", PreParser.validRegularExpression("/^dude$/"+s));
 		assertFalse("Invalid flag marked as valid", PreParser.validRegularExpression("/^dude$/#"));
-		//assertFalse("Don't allow duplicate flags", PreParser.validRegularExpression("/^dude$/"+s+s));
+		assertTrue("Don't error with duplicate flags", PreParser.validRegularExpression("/^dude$/"+s+s));
 
 		// Test blocking
 		assertFalse("Can not contain an unescaped +", PreParser.validRegularExpression("/^dude+$/"));
@@ -46,9 +46,7 @@ public class PreParserTest {
 		assertTrue("Should accept an escaped +", PreParser.validRegularExpression("/^dude\\+$/"));
 		assertTrue("Should accept an escaped *", PreParser.validRegularExpression("/^dude\\*$/"));
 		assertTrue("Should accept a quantifier with a final value", PreParser.validRegularExpression("/^dude{1,5}$/"));
-		//assertTrue("Should accept a quantifier with a final value", PreParser.validRegularExpression("/^dude{,5}$/"));
 		assertTrue("Should accept a quantifier with only one value", PreParser.validRegularExpression("/^dude{4}$/"));
-		//assertTrue("Should accept a quantifier with a fina value of 1", PreParser.validRegularExpression("/^dude{,1}$/"));
 	}
 
 	Random rand = new Random();
