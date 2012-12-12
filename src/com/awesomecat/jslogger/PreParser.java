@@ -48,4 +48,17 @@ public class PreParser {
         return false;
     }
 
+    /**
+     * Determine if inputted size is valid.
+     * @param input
+     * @return
+     */
+    public static boolean validWindowSize(String input){
+    	try {
+	    	int i = Integer.parseInt(input);
+	    	return i > 0;
+    	} catch (Exception e){
+    		return false;
+    	}
+    }
 }
