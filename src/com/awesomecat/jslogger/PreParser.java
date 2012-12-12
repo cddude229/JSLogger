@@ -1,7 +1,9 @@
 package com.awesomecat.jslogger;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 public class PreParser {
 	
@@ -52,6 +54,7 @@ public class PreParser {
     		  return false;
     	}
     	int flag_index=0;
+    	ArrayList flags = new ArrayList();
     	for(int i= (re.length()-1);i>=0; i-- ){
     		String cur_char = re.substring(i,i+1);
     		System.out.println("cur_char: "+cur_char); //DEBUG
@@ -63,6 +66,9 @@ public class PreParser {
     		if(!isValidFlag(cur_char)){
     			System.out.println("!isValidFlag(cur_char)");
     			return false;
+    		}
+    		else{
+    			flags.add(cur_char);
     		}
     	}
     	if(flag_index == 0){
@@ -110,9 +116,15 @@ public class PreParser {
     			}
     		}
     	}
+        try {
+        	int flag_value = convertFlagstoConstants(flags);
+            Pattern.compile(no_slash, flag_value); //doesn't handle flags
+        } catch (PatternSyntaxException exception) {
+            return false;
+        }
     	return true;
     }
-    //ADDED
+    //ADDED(Aaron)
     private static boolean matchesPattern(Pattern p,String sentence) {
         Matcher m = p.matcher(sentence);
 
