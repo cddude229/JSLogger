@@ -46,7 +46,6 @@ public class PreParser {
 	 * @return
 	 */
     public static boolean validRegularExpression(String re) {
-        // TODO: Write our regular expression evaluator
         /*
          * Steps before building:
          * 1) We need to determine which flags we support (i.e. /hi/gim, the "gim" part)
