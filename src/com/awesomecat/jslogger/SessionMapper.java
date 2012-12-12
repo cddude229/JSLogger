@@ -14,14 +14,29 @@ public class SessionMapper {
 		this.store = store;
 	}
 
-	public String getAssociatedId(int expressionId){
+	/**
+	 * Gets an associated ID given an expression ID
+	 * @param expressionId
+	 * @return
+	 */
+	private String getAssociatedId(int expressionId){
 		return store.createAssociatedId(sessionId, expressionId);
 	}
 
-	public int registerExpression(Expression expression){
+	/**
+	 * Registers an expression with the store
+	 * @param expression
+	 * @return The ID of the registered expression
+	 */
+	private int registerExpression(Expression expression){
 		return store.storeExpression(expression);
 	}
 
+	/**
+	 * Will register an expression object and return the ID that should be in the JavaScript log call
+	 * @param expression
+	 * @return The associated ID to be put into the log call
+	 */
 	public String registerExpressionAndGetAssociatedId(Expression expression){
 		return getAssociatedId(registerExpression(expression));
 	}

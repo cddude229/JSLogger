@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class JavaScriptFilePreParser {
 	/**
-	 * Takes the currently defined file
+	 * Takes the specified file and will evaluate it
 	 * @param file The file to parse
 	 * @param mapper The session mapper that we use to obtain IDs
 	 * @return The now parsed JavaScript file to be rendered to the user 
@@ -36,7 +36,7 @@ public class JavaScriptFilePreParser {
 	 * @return
 	 */
 	public static String evaluateString(String content, SessionMapper mapper){
-		// TODO: Write our file parser
+		// TODO: @Aaron Write our file parser
 		return "";
 	}
 
