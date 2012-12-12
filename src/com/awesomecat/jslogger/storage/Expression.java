@@ -1,30 +1,15 @@
-package com.awesomecat.jslogger.expression;
+package com.awesomecat.jslogger.storage;
 
 import java.io.Serializable;
 
 public class Expression implements Serializable {
 	/**
-	 * 
+	 * IGNORE. Used by serializable
 	 */
 	private static final long serialVersionUID = -8127473370473769283L;
 
 	/**
-	 * Associated IP for this expression
-	 */
-	public final String sessionIP;
-	
-	/**
-	 * Associated cookie value for this expression
-	 */
-	public final String sessionCookie;
-	
-	/**
-	 * Associated identifier, typically a username or userid
-	 */
-	public final String sessionIdentifier;
-	
-	/**
-	 * Length of which this expression is valid
+	 * Duration qq of which this expression is valid
 	 */
 	public final int validDuration;
 	
@@ -44,18 +29,15 @@ public class Expression implements Serializable {
 	public final boolean runOnce;
 	
 	/**
-	 * The size of retained windows
+	 * The size of retained window
 	 */
 	public final int windowSize;
 	
 	public Expression(){
-		this(null, null, null, 0, null, true, 2);
+		this(0, null, true, 2);
 	}
 	
-	public Expression(String sessionIP, String sessionCookie, String sessionIdentifier, int validDuration, String expression, boolean runOnce, int windowSize){
-		this.sessionIP = sessionIP;
-		this.sessionCookie = sessionCookie;
-		this.sessionIdentifier = sessionIdentifier;
+	public Expression(int validDuration, String expression, boolean runOnce, int windowSize){
 		this.validDuration = validDuration;
 		this.creationTime = getCurrentTime();
 		this.expression = expression;

@@ -1,8 +1,7 @@
-package com.awesomecat.jslogger.expression.store;
+package com.awesomecat.jslogger.storage;
 
 import java.util.Random;
 
-import com.awesomecat.jslogger.expression.Expression;
 
 public abstract class ExpressionStore {
 	

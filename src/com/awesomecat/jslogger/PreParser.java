@@ -1,6 +1,20 @@
 package com.awesomecat.jslogger;
 
 public class PreParser {
+	
+	/**
+	 * Allowed flags by our regular expression evaluator
+	 */
+	private static final String allowedFlags = "gim";
+
+	/**
+	 * Is the potential flag valid?
+	 * @param potentialFlag The length 1 string to check
+	 * @return True if valid, false otherwise
+	 */
+	public static boolean isValidFlag(String potentialFlag){
+		return potentialFlag.length() == 1 && allowedFlags.indexOf(potentialFlag) >= 0;
+	}
 
 	/**
 	 * Determines if a given regular expression is strict enough to meet out requirements.
@@ -24,6 +38,10 @@ public class PreParser {
          * 		NOTE: We don't ban {,#} because they are willingly implementing a max limit
          * 
          * 8) At this point, I think everything should be valid and not overly inefficient
+         * 
+         * 
+         * 
+         * NOTE: What about if they escape that last /?   (i.e. /hi\/  wouldn't be valid)
          */ 
         return false;
     }

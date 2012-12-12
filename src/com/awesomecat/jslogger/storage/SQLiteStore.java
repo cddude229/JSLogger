@@ -1,6 +1,5 @@
-package com.awesomecat.jslogger.expression.store;
+package com.awesomecat.jslogger.storage;
 
-import com.awesomecat.jslogger.expression.Expression;
 
 public class SQLiteStore extends ExpressionStore {
 
@@ -18,12 +17,10 @@ public class SQLiteStore extends ExpressionStore {
 	@Override
 	public void deleteOldExpressions() {
 		// TODO: Clean out any expressions that might have expired
-		
 	}
 
 	@Override
 	public void deleteExpression(String id) {
 		// TODO: Delete a specific expression
-		
 	}
 }
