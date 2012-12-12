@@ -5,8 +5,8 @@ import java.util.Random;
 
 public abstract class AbstractStore {
 
-	public static final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
-	public static final int idLength = 10; // TODO: @Chris Make this load from configuration
+	private static final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+	private static final int idLength = 10; // TODO: @Chris Make this load from configuration
 
 
 
@@ -22,6 +22,20 @@ public abstract class AbstractStore {
 	 * @return Returns null if nothing found
 	 */
 	abstract public Expression getExpression(int id);
+
+	/**
+	 * Gets an expression when given an associated id
+	 * @param associatedId
+	 * @return Null if no match
+	 */
+	abstract public Expression getExpressionFromAssociatedId(String associatedId);
+
+	/**
+	 * Gets an expression id when given an associated id
+	 * @param associatedId
+	 * @return -1 if no match
+	 */
+	abstract public int getExpressionIdFromAssociatedId(String associatedId);
 
 	/**
 	 * Stores a new expression and returns new ID.  If expression matches existing one, returns old ID

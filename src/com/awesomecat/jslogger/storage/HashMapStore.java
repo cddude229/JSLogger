@@ -65,7 +65,7 @@ public class HashMapStore extends AbstractStore {
 
 	@Override
 	public void deleteExpiredAssociatedIds() {
-		// TODO @Chris delete expired associated IDs
+		// TODO: @Chris delete expired associated IDs
 	}
 
 	@Override
@@ -127,6 +127,20 @@ public class HashMapStore extends AbstractStore {
 
 		// Delete min time
 		deleteAssociatedId(minId);
+	}
+
+	@Override
+	public Expression getExpressionFromAssociatedId(String associatedId) {
+		int expressionId = getExpressionIdFromAssociatedId(associatedId);
+		if(expressionId == -1) return null;
+		return getExpression(expressionId);
+	}
+
+	@Override
+	public int getExpressionIdFromAssociatedId(String associatedId) {
+		AssociatedId a = associatedIdStore.get(associatedId);
+		if(a == null) return -1;
+		return a.expressionId;
 	}
 
 }

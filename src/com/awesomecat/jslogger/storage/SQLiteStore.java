@@ -41,4 +41,14 @@ public class SQLiteStore extends AbstractStore {
 	public void deleteOldestAssociatedId(int sessionId, int expressionId) {
 	}
 
+	@Override
+	public Expression getExpressionFromAssociatedId(String associatedId) {
+		return null;
+	}
+
+	@Override
+	public int getExpressionIdFromAssociatedId(String associatedId) {
+		return -1;
+	}
+
 }
