@@ -64,18 +64,17 @@ public class JavaScriptFilePreParser {
 		while (regexMatcher.find()) {
 			output = regexMatcher.group(1);
 		}
-		 // TODO: @Aaron: Make these defaults from configuration
 		if(output.equals("") && str_id.equals("@valid-duration")){
-			output = "5";
+			output = JavaScriptLogger.getConfig().getString("blocks.defaultValues.valid-duration");
 		}
 		if(output.equals("") && str_id.equals("@validate")){
 			output = "";
 		}
 		if(output.equals("") && str_id.equals("@run-once")){
-			output = "false";
+			output = JavaScriptLogger.getConfig().getString("blocks.defaultValues.run-once");
 		}
 		if(output.equals("") && str_id.equals("@window-size")){
-			output = "2";
+			output = JavaScriptLogger.getConfig().getString("blocks.defaultValues.window-size");
 		}
 		if(output.equals("") && str_id.equals("@id")){
 			output = "";
