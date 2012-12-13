@@ -117,7 +117,7 @@ public abstract class AbstractStore {
 	 * Generates a new, unused ID.  No guarantee to be unique, but typically 1 / (64^10) probability.
 	 * @return The new ID. Contains A-Za-z0-9-_
 	 */
-	final public String generateAssociatedId(){
+	final static public String generateAssociatedId(){
 		// NOTE: We're going to assume no conflicts because of how unlikely they are.  1 / (64^10) is the probability
 		Random r = new Random();
 		int i;
@@ -127,6 +127,20 @@ public abstract class AbstractStore {
 			id += characters.substring(i, i+1);
 		}
 		return id;
+	}
+
+	/**
+	 * Determines if the given ID is valid (And thus SQL secure)
+	 * @param id
+	 * @return valid?
+	 */
+	final static public boolean isValidAssociatedId(String id){
+		for(int i=0;i<id.length();i++){
+			if(characters.indexOf(id.substring(i, i+1)) < 0){
+				return false;
+			}
+		}
+		return true;
 	}
 
 

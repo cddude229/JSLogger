@@ -10,6 +10,16 @@ public class AllStoreTest {
 	private final Random r = new Random();
 	
 	@Test
+	public void testAssocIdGeneration() throws Exception {
+		int i = 0;
+		String id;
+		while(i++ < 100){
+			id = AbstractStore.generateAssociatedId();
+			assertTrue("generated ID ("+id+") should be valid", AbstractStore.isValidAssociatedId(id));
+		}
+	}
+	
+	@Test
 	public void testHashMapStore() throws Exception {
 		runTestSuite(new HashMapStore());
 	}
