@@ -34,7 +34,7 @@ public class Expression implements Serializable {
 	public final int windowSize;
 	
 	public Expression(){
-		this(0, null, true, 2);
+		this(5, null, true, 2);
 	}
 	
 	public Expression(int validDuration, String expression, boolean runOnce, int windowSize){
@@ -53,7 +53,6 @@ public class Expression implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (creationTime ^ (creationTime >>> 32));
 		result = prime * result
 				+ ((expression == null) ? 0 : expression.hashCode());
 		result = prime * result + (runOnce ? 1231 : 1237);
@@ -71,8 +70,6 @@ public class Expression implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Expression other = (Expression) obj;
-		if (creationTime != other.creationTime)
-			return false;
 		if (expression == null) {
 			if (other.expression != null)
 				return false;

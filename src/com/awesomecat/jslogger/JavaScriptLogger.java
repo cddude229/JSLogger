@@ -83,7 +83,10 @@ public class JavaScriptLogger {
 		}
 
 		// Return our id
-		return store.getSessionId(sessionType, sessionValue);
+		return getSessionId(sessionType, sessionValue);
+    }
+    public static int getSessionId(SessionType sessionType, String sessionValue){
+		return store.getSessionId(sessionType, sessionValue);	
     }
     
     private static Pattern buildPatternFromExpression(String exp){
@@ -101,4 +104,12 @@ public class JavaScriptLogger {
     	// Finish strong
     	return Pattern.compile(p, flagsInt);
     }
+
+    /**
+     * ONLY USED FOR TESTING PURPOSES
+     * @return
+     */
+	public static AbstractStore getStore() {
+		return store;
+	}
 }
