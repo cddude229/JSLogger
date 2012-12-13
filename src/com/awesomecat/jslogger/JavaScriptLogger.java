@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -20,8 +21,7 @@ public class JavaScriptLogger {
     private static Level jsLogLevel = Level.ERROR;
     
 
-    
-    public static boolean handleLogging(ServletRequest request, SessionType sessionType, String sessionValue){
+    public static boolean handleLogging(ServletRequest request){
     	// No null values allowed
     	if(request == null) return false;
 
@@ -29,15 +29,14 @@ public class JavaScriptLogger {
     	String message = request.getParameter("message");
     	String associatedId = request.getParameter("logid");
     	
-    	return handleLogging(message, associatedId, sessionType, sessionValue);
+    	int sessionId = getSessionId(request);
+    	
+    	return handleLogging(message, associatedId, sessionId);
     }
 
-    public static boolean handleLogging(String message, String associatedId, SessionType sessionType, String sessionValue){
+    public static boolean handleLogging(String message, String associatedId, int sessionId){
         // No null values allowed
-    	if(message == null || associatedId == null || sessionType == null || sessionValue == null) return false;
-
-    	// Get our sessionId
-    	int sessionId = store.getSessionId(sessionType, sessionValue);
+    	if(message == null || associatedId == null) return false;
     	
     	// Validate that the log id exists
     	int expressionId = store.getExpressionIdFromAssociatedId(associatedId);
@@ -59,6 +58,32 @@ public class JavaScriptLogger {
     	logger.log(jsLogLevel, message);
     	
     	return true;
+    }
+   
+    public static SessionMapper buildSessionMapper(int sessionId){
+    	return new SessionMapper(sessionId, store);
+    }
+
+	
+	private static final String USERNAME_ATTRIBUTE = "username";
+	private static boolean SUPPORT_USERNAMES = false;
+    public static int getSessionId(ServletRequest request){
+		// Store the IP temporarily as session identifier
+		SessionType sessionType = SessionType.IP;
+		String sessionValue = request.getRemoteAddr();
+
+		// Attempt to get the user name for session status
+		if(SUPPORT_USERNAMES && request instanceof HttpServletRequest){
+			HttpServletRequest req = (HttpServletRequest) request;
+			Object username = req.getSession().getAttribute(USERNAME_ATTRIBUTE);
+			if(username != null){
+				sessionType = SessionType.USERNAME;
+				sessionValue = username.toString();
+			}
+		}
+
+		// Return our id
+		return store.getSessionId(sessionType, sessionValue);
     }
     
     private static Pattern buildPatternFromExpression(String exp){
