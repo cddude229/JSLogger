@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Customized Calculator using JavaScript</title>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <meta name="description" content="Customized Calculator using JavaScript" />
+        <meta name="keywords" content="css, html, javascript, jQuery, calculator, tutorial" />
+        <link rel="stylesheet" type="text/css" href="css/demo.css" />
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.js"></script>
+        <script src="js/JSLogger.js"></script>
+        <link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css' />
+        <script src="js/calculator.js"></script>
+    </head>
+    <body>
+      <div class="container">
+      </div>
+      <h1>Customized Calculator<span>using HTML, CSS and JavaScript</span></h1><br/>
+      <div class="content">
+        <div class="button-wrapper">
+          <div style="float:left;">
+            <input class="textbox" id="screen" type="text">
+          </div>
+          <ul id="buttons">
+	    <li><input class="calc" type="button" value=1 onclick="pushButton(this.value);"></li>
+	    <li><input class="calc" type="button" value=2 onclick="pushButton(this.value);"></li>
+	    <li><input class="calc" type="button" value=3 onclick="pushButton(this.value);"></li>
+	    <li><input class="calc" type="button" value='/' onclick="pushButton(this.value);"></li>
+	  </ul>
+          <ul id="buttons">
+	    <li><input class="calc" type="button" value=4 onclick="pushButton(this.value);"></li>
+	    <li><input class="calc" type="button" value=5 onclick="pushButton(this.value);"></li>
+	    <li><input class="calc" type="button" value=6 onclick="pushButton(this.value);"></li>
+	    <li><input class="calc" type="button" value='*' onclick="pushButton(this.value);"></li>
+	  </ul>
+          <ul id="buttons">
+	    <li><input class="calc" type="button" value=7 onclick="pushButton(this.value);"></li>
+	    <li><input class="calc" type="button" value=8 onclick="pushButton(this.value);"></li>
+	    <li><input class="calc" type="button" value=9 onclick="pushButton(this.value);"></li>
+	    <li><input class="calc" type="button" value='-' onclick="pushButton(this.value);"></li>
+	  </ul>
+          <ul id="buttons">
+	    <li><input class="calc" type="button" value=0 onclick="pushButton(this.value);"></li>
+	    <li><input class="calc" type="button" value='.' onclick="pushButton(this.value);"></li>
+	    <li><input class="calc" type="button" value='C' onclick="pushButton(this.value);"></li>
+	    <li><input class="calc" type="button" value='+' onclick="pushButton(this.value);"></li>
+	  </ul>
+          <ul id="buttons">
+            <li><input class="calc" type="button" value='=' onclick="calculate(document.getElementById('screen').value);"></li>
+	  </ul>
+	</div>
+      </div>
+</div>
+</body>
+</html>
