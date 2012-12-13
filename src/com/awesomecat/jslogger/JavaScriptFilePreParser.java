@@ -108,6 +108,10 @@ public class JavaScriptFilePreParser {
 		ArrayList<Integer> window_list = new ArrayList<Integer>();
 		ArrayList<String> id_list = new ArrayList<String>();
 		for(int i=0; i<comment_blocks.size(); i++){
+			// TODO: @Aaron: Make this pass JavaScriptFilePreParserTest. It currently fails when these are invalid
+			// TODO: @Aaron: Validate that the @validate is valid using the parser you wrote before
+			// If it is invalid, do not add it and do not remove the block
+			// By leaving it in, it's easier for a user to debug that their thing did not parse correctly
 			String comment_block = comment_blocks.get(i);
 			val_dur_list.add(Integer.parseInt(extract("@valid-duration", comment_block).trim()));
 			express_list.add(extract("@validate", comment_block).trim());

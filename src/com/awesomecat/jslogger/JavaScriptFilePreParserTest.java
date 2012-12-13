@@ -80,6 +80,35 @@ public class JavaScriptFilePreParserTest {
 		String[] ids1 = store.getAssociatedIds(getSessionId(), expressionId);
 		assertTrue("Should insert it just once", ids1.length == 1);
 	}
+
+	@Test
+	public void invalidInputTest() throws Exception {
+		try {
+			String result;
+
+			result = testFile("TESTINPUT/incorrect_parameter_blankid.js");
+			assertTrue("Should not have replaced all definition blocks (blank id)", !doesNotContainBlocks(result));
+
+			result = testFile("TESTINPUT/incorrect_parameter_duration.js");
+			assertTrue("Should not have replaced all definition blocks (duration)", !doesNotContainBlocks(result));
+
+			result = testFile("TESTINPUT/incorrect_parameter_missingid.js");
+			assertTrue("Should not have replaced all definition blocks (missing id)", !doesNotContainBlocks(result));
+
+			result = testFile("TESTINPUT/incorrect_parameter_runonce.js");
+			assertTrue("Should not have replaced all definition blocks (runonce)", !doesNotContainBlocks(result));
+
+			result = testFile("TESTINPUT/incorrect_parameter_validate.js");
+			assertTrue("Should not have replaced all definition blocks (validate)", !doesNotContainBlocks(result));
+
+			result = testFile("TESTINPUT/incorrect_parameter_windowsize.js");
+			assertTrue("Should not have replaced all definition blocks (windowsize)", !doesNotContainBlocks(result));
+
+		} catch(Exception e){
+			assertTrue("The JavaScriptFilePreParser should never throw an error for invalid parameters", false);
+		}
+		
+	}
 	
 	@Test
 	public void shouldErrorTests() throws Exception {
