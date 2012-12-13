@@ -1,0 +1,49 @@
+TODO: @Aaron: Build this SQL structure:
+
+
+
+Expressions
+	id					Integer		auto_increment		primary_key
+	validDuration		Integer
+	creationTime		Integer (or long?)
+	expression			String/text
+	runOnce				Boolean/TinyInt (0 or 1)
+	windowSize			Integer
+
+
+AssociatedId
+	sessionid			Integer
+	expressionid		Integer
+	creationTime		Integer
+	id					String/Text/varchar		primary_key		unique
+
+
+Sessions
+	id					Integer		auto_increment		primary_key
+	type				TinyInt (0 for ip, 1 for username)
+	value				String/Text
+	
+	
+	
+	
+CREATE TABLE Expressions
+(id INTEGER NOT NULL,
+validDuration INTEGER,
+creationTime INTEGER,
+expression TEXT(25),
+runOnce INTEGER,
+windowSize INTEGER,
+PRIMARY KEY (id))
+
+CREATE TABLE AssociatedId
+(id VARCHAR(25) NOT NULL,
+sessionId INTEGER,
+expressionId INTEGER,
+creationTime INTEGER,
+PRIMARY KEY (id))
+
+CREATE TABLE Sessions
+(id INTEGER NOT NULL,
+type INTEGER,
+value VARCHAR(50),
+PRIMARY KEY (id))
