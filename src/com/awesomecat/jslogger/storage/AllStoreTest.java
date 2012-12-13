@@ -100,6 +100,10 @@ public class AllStoreTest {
 		// Now, see if match works
 		assertTrue("Associated id should match session and expression id", store.matchAssociatedId(assocId1, sessionId, expressionId));
 
+		// Ok, now get the matching expression and expression IDs to make sure they work
+		assertTrue("Should get correct expression id from associated id", store.getExpressionIdFromAssociatedId(assocId1) == expressionId);
+		assertTrue("Should get correct expression from associated id", e.equals(store.getExpressionFromAssociatedId(assocId1)));
+
 		// Now, try deleting the assoc id and see if match fails
 		store.deleteAssociatedId(assocId1);
 		assertFalse("Deleted associated id should not match session and expression id", store.matchAssociatedId(assocId1, sessionId, expressionId));
@@ -119,7 +123,4 @@ public class AllStoreTest {
 		);
 
 	}
-	
-	// TODO: @Chris: Update the tests above to include the new getExpresionFromAssociatedId methods
-
 }
