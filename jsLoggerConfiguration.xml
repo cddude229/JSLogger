@@ -7,4 +7,5 @@
 			<window-size>3</window-size>
 		</defaultValues>
 	</blocks>
+	<associatedIdLength>15</associatedIdLength>
 </jsLogger>

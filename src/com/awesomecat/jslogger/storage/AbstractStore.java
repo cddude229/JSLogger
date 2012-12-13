@@ -2,11 +2,13 @@ package com.awesomecat.jslogger.storage;
 
 import java.util.Random;
 
+import com.awesomecat.jslogger.JavaScriptLogger;
+
 
 public abstract class AbstractStore {
 
 	private static final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
-	private static final int idLength = 10; // TODO: @Aaron: Make this load from configuration
+	private static final int idLength = JavaScriptLogger.getConfig().getInt("associatedIdLength");
 
 
 
