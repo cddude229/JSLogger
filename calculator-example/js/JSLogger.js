@@ -1,6 +1,6 @@
 var Logger = function(url){
 	return {
-		log: function(message, logid){
+		log: function(message, logid){ 
 			$.ajax({
 				type: 'GET',
 				url: url,

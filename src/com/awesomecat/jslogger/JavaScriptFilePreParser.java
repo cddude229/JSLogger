@@ -7,32 +7,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.awesomecat.jslogger.storage.Expression;
-import com.awesomecat.jslogger.storage.HashMapStore;
 
 public class JavaScriptFilePreParser {
-	public static void main(String[] args){
-		String content = 
-			"/**# \n" +
-			"* @valid-duration 5 \n" +
-			"* @run-once true \n" +
-			"* @window-size 2 \n" +
-			"* @validate /^hello-world1$/sim \n" +
-			"* @id 5 \n" +
-			"#**/ \n" +
-			"logger.log(\"blah\", \"$id=5\") \n" +
-			"/**# \n" +
-			"* @valid-duration 3 \n" +
-			"* @run-once false \n" +
-			"* @window-size 1 \n" +
-			"* @validate /^hello-world2$/sim \n" +
-			"* @id 4 \n" +
-			"#**/ \n" +
-			"logger.log(\"blah\", \"$id=4\")";
-		SessionMapper mapper = new SessionMapper(5, new HashMapStore());
-		System.out.println(evaluateString(content, mapper));
-		
-	}
-
 	/**
 	 * Takes the specified file and will evaluate it
 	 * @param file The file to parse
