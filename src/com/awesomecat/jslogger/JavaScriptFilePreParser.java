@@ -71,6 +71,7 @@ public class JavaScriptFilePreParser {
 		while (regexMatcher.find()) {
 			output = regexMatcher.group(1);
 		}
+		 // TODO: @Aaron: Make these defaults from configuration
 		if(output.equals("") && str_id.equals("@valid-duration")){
 			output = "5";
 		}
