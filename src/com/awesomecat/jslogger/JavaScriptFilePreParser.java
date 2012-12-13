@@ -123,6 +123,7 @@ public class JavaScriptFilePreParser {
 			new_id_list.add(mapper.registerExpressionAndGetAssociatedId(expression));
 		}
 		//update new_content
+		//TODO only replaces in a log line
 		Pattern p3 = Pattern.compile("\"(\\$id=[^\\s\\t]+)\"\\)", Pattern.DOTALL);
 		Matcher regexMatcher3 = p3.matcher(new_content);
 		while (regexMatcher3.find()) {
