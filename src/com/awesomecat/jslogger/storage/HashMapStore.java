@@ -1,5 +1,6 @@
 package com.awesomecat.jslogger.storage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class HashMapStore extends AbstractStore {
@@ -65,7 +66,6 @@ public class HashMapStore extends AbstractStore {
 
 	@Override
 	public void deleteExpiredAssociatedIds() {
-		// TODO: @UNASSIGNED: delete expired associated IDs in HashMapStore
 		/*
 		 * Steps:
 		 * 1) Iterate over all associated IDs
@@ -73,6 +73,22 @@ public class HashMapStore extends AbstractStore {
 		 * 3) Get validDuration from Expression
 		 * 4) if validDuration < currentTime - associatedId.creationTime, then delete it (use deleteAssociatedId(String id))
 		 */
+		ArrayList<String> deletes = new ArrayList<String>();
+		for(String id : associatedIdStore.keySet()){
+			// Get associated ID, find expression, see if we should delete it
+			AssociatedId a = associatedIdStore.get(id);
+			Expression e = getExpression(a.expressionId);
+			int validDuration = e.validDuration;
+			if(validDuration < java.util.Calendar.getInstance().getTimeInMillis() - a.creationTime){
+				// Mark for delete.  We can't delete here because it messes up the iterator
+				deletes.add(id);
+			}
+		}
+		
+		// Finally delete them
+		for(String id : deletes){
+			deleteAssociatedId(id);
+		}
 	}
 
 	@Override
