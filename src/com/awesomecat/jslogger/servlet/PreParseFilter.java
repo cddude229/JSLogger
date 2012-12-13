@@ -15,13 +15,11 @@ import com.awesomecat.jslogger.SessionMapper;
 public final class PreParseFilter implements Filter {
    
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		System.out.println("Trying to handle js file");
 		HttpServletRequest req = (HttpServletRequest) request;
 		String path = getPath(req);
 
 		// See if it's a JS file and then pre-parse
-		if(path.length() > 4 && path.substring(path.length()-3).toLowerCase().equals(".js")){
-			System.out.println("Handling js file");
+		if(req.getParameter("noparse") == null && path.length() > 4 && path.substring(path.length()-3).toLowerCase().equals(".js")){
 			File f = new File(path);
 			SessionMapper mapper = JavaScriptLogger.buildSessionMapper(
 				JavaScriptLogger.getSessionId(req)

@@ -14,7 +14,7 @@
  * @id userInput
  #**/
 
-var logger = new Logger("http://localhost:8080/");
+var logger = Logger("http://localhost:8080/");
 function pushButton(buttonValue) {
     if (buttonValue == 'C') {
         document.getElementById('screen').value = '';
@@ -26,7 +26,7 @@ function pushButton(buttonValue) {
 function calculate(equation) {
     try {
         var answer = eval(equation);
-	logger.log("user entered: " + equation, "$id=userInput");
+	    logger.log("user entered: " + equation, "$id=userInput");
     } catch(ex) {
         logger.log("could not eval: " + equation, "$id=error");
     }

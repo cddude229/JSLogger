@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <jsLogger>
-
+	<blocks>
+		<defaultValues>
+			<valid-duration>300</valid-duration><!--  Valid duration in seconds -->
+			<run-once>false</run-once>
+			<window-size>3</window-size>
+		</defaultValues>
+	</blocks>
+	<associatedIdLength>15</associatedIdLength>
 </jsLogger>

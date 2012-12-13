@@ -68,10 +68,10 @@ public class AllStoreTest {
 	}
 
 	private void testStoredExpressionShouldEqualInput(AbstractStore store){
-		Expression e = new Expression();
+		Expression e = new Expression(1, "hello", true, 5);
 		int id = store.storeExpression(e);
 		assertTrue(
-			"Stored expression (default constructor) should equal the input",
+			"Stored expression should equal the input",
 			e.equals(store.getExpression(id))
 		);
 
@@ -84,7 +84,7 @@ public class AllStoreTest {
 	}
 
 	private void testCreatingAssociatedIds(AbstractStore store){
-		Expression e = new Expression();
+		Expression e = new Expression(1, "hello", true, 4);
 		String ip = "123.245.123.245";
 		int expressionId = store.storeExpression(e);
 		int sessionId = store.getSessionId(SessionType.IP, ip);
@@ -99,6 +99,10 @@ public class AllStoreTest {
 		
 		// Now, see if match works
 		assertTrue("Associated id should match session and expression id", store.matchAssociatedId(assocId1, sessionId, expressionId));
+
+		// Ok, now get the matching expression and expression IDs to make sure they work
+		assertTrue("Should get correct expression id from associated id", store.getExpressionIdFromAssociatedId(assocId1) == expressionId);
+		assertTrue("Should get correct expression from associated id", e.equals(store.getExpressionFromAssociatedId(assocId1)));
 
 		// Now, try deleting the assoc id and see if match fails
 		store.deleteAssociatedId(assocId1);
@@ -119,7 +123,4 @@ public class AllStoreTest {
 		);
 
 	}
-	
-	// TODO: @Chris: Update the tests above to include the new getExpresionFromAssociatedId methods
-
 }

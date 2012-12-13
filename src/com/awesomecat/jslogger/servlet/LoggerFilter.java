@@ -10,7 +10,6 @@ import com.awesomecat.jslogger.JavaScriptLogger;
 
 public final class LoggerFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		System.out.println("LoggerFilter accessed");
 		if("1".equals(request.getParameter("jsLogger"))){
 
 			// Ok, write to our log file
