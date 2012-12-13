@@ -7,6 +7,8 @@ import java.util.regex.Pattern;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -19,6 +21,18 @@ public class JavaScriptLogger {
     private static Logger logger = Logger.getLogger("jslogger");
     private static AbstractStore store = new HashMapStore();
     private static Level jsLogLevel = Level.ERROR;
+    private static Configuration config = null;
+    
+    public static Configuration getConfig() throws RuntimeException {
+    	if(config == null){
+    		try {
+    			config = new XMLConfiguration("jsLoggerConfiguration.xml");
+    		} catch(Exception e){
+    			throw new RuntimeException("Unable to load configuration.");
+    		}
+    	}
+    	return config;
+    }
     
 
     public static boolean handleLogging(ServletRequest request){
