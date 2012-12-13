@@ -9,7 +9,6 @@ import com.awesomecat.jslogger.servlet.PreParseFilter;
 public class LaunchTestServer {
 
     public static void main(String[] args) throws Exception {
-        System.out.println("'cause I can");
         Server server = new Server(8080);
         
         int options = ServletContextHandler.NO_SECURITY;
@@ -29,7 +28,6 @@ public class LaunchTestServer {
         context.addServlet("DummyServlet", "/*");
         
         server.start();
-        System.out.println("'cause I can");
         server.join();
     }
 }
