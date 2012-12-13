@@ -118,10 +118,6 @@ public class JavaScriptFilePreParser {
 		
 		ArrayList<String> new_id_list = new ArrayList<String>();
 		for(int i=0; i<id_list.size(); i++){
-			System.out.println(val_dur_list.get(i));
-			System.out.println(express_list.get(i));
-			System.out.println(run_once_list.get(i));
-			System.out.println(window_list.get(i));
 			Expression expression = new Expression(val_dur_list.get(i),express_list.get(i),
 					run_once_list.get(i),window_list.get(i));
 			new_id_list.add(mapper.registerExpressionAndGetAssociatedId(expression));
