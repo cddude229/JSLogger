@@ -9,6 +9,7 @@ public abstract class AbstractStore {
 
 	private static final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 	private static final int idLength = JavaScriptLogger.getConfig().getInt("associatedIdLength");
+	public static final int staticSessionId = -1;
 
 
 
@@ -55,6 +56,15 @@ public abstract class AbstractStore {
 		Expression exp = getExpression(expressionId);
 		if(exp == null) return -1;
 		return exp.windowSize;
+	}
+
+	/**
+	 * Generates a static ID that looks like an associated ID for a given expression ID
+	 * @param expressionId
+	 * @return
+	 */
+	final public String getStaticIdForExpression(int expressionId) {
+		return createAssociatedId(staticSessionId, expressionId);
 	}
 
 

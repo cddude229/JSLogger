@@ -1,5 +1,8 @@
 package com.awesomecat.jslogger;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,6 +25,47 @@ public class JavaScriptLogger {
     private static AbstractStore store = new HashMapStore();
     private static Level jsLogLevel = Level.ERROR;
     private static Configuration config = null;
+
+    public static void main(String[] args) throws IOException {
+    	// This is how we create static files on the fly
+    	if(args.length != 3){
+    		System.out.println(String.format("Not enough arguments. Given %s, need 3", args.length));
+    		return;
+    	}
+    	
+    	if(!args[0].equals("--staticfile")){
+    		System.out.println("Currently only staticfile generation is supported.");
+    		return;
+    	}
+    	
+    	File inFile = new File(args[1]), outFile = new File(args[2]);
+    	if(inFile.exists() == false){
+    		System.out.println("In file does not exist.");
+    		return;
+    	}
+    	
+    	if(inFile.isDirectory()){
+    		System.out.println("In file can not be a directory.");
+    		return;
+    	}
+    	
+    	if(outFile.isDirectory()){
+    		System.out.println("Out file can not be a directory.");
+    		return;
+    	}
+    	
+    	// Ok, now we can make a static file :P
+    	String result = JavaScriptFilePreParser.evaluateFile(inFile, new StaticMapper(store));
+    	if(outFile.exists()){
+    		// If the file exists already, delete it first
+    		outFile.delete();
+    	}
+		outFile.createNewFile();
+    	PrintWriter out = new PrintWriter(outFile);
+    	out.write(result);
+    	out.flush();
+    	out.close();
+    }
     
     public static Configuration getConfig() throws RuntimeException {
     	if(config == null){
@@ -34,7 +78,6 @@ public class JavaScriptLogger {
     	return config;
     }
     
-
     public static boolean handleLogging(ServletRequest request){
     	// No null values allowed
     	if(request == null) return false;

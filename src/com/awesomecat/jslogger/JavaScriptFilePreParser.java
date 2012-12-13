@@ -17,7 +17,7 @@ public class JavaScriptFilePreParser {
 	 * @return The now parsed JavaScript file to be rendered to the user 
 	 * @throws FileNotFoundException
 	 */
-	public static String evaluateFile(File file, SessionMapper mapper, boolean staticFile) throws FileNotFoundException {
+	public static String evaluateFile(File file, Mapper mapper, boolean staticFile) throws FileNotFoundException {
 		if(file.exists() == false) throw new RuntimeException("File does not exist.");
 		if(file.isDirectory() == true) throw new RuntimeException("File is a directory.");
 		if(file.canRead() == false) throw new RuntimeException("Must be able to read the file.");
@@ -34,7 +34,7 @@ public class JavaScriptFilePreParser {
 	    }
 		return evaluateString(text.toString(), mapper, staticFile);
 	}
-	public static String evaluateFile(File file, SessionMapper mapper) throws FileNotFoundException {
+	public static String evaluateFile(File file, Mapper mapper) throws FileNotFoundException {
 		return evaluateFile(file, mapper, false);
 	}
 	private static String extract(String str_id, String comment_block){
@@ -69,7 +69,7 @@ public class JavaScriptFilePreParser {
 	 * @param staticFile
 	 * @return
 	 */
-	public static String evaluateString(String content, SessionMapper mapper, boolean staticFile){
+	public static String evaluateString(String content, Mapper mapper, boolean staticFile){
 		ArrayList<String> comment_blocks = new ArrayList<String>();
 		//grabs comment values
 		Pattern p1 = Pattern.compile("/\\*\\*#(.*?)#\\*\\*/", Pattern.DOTALL);

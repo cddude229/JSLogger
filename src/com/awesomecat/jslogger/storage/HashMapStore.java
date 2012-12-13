@@ -20,7 +20,7 @@ public class HashMapStore extends AbstractStore {
 		public AssociatedId(int sessionId, int expressionId){
 			this.sessionId = sessionId;
 			this.expressionId = expressionId;
-			this.creationTime = java.util.Calendar.getInstance().getTimeInMillis();
+			this.creationTime = (sessionId == staticSessionId?Long.MAX_VALUE:java.util.Calendar.getInstance().getTimeInMillis());
 		}
 	}
 
@@ -77,6 +77,7 @@ public class HashMapStore extends AbstractStore {
 		for(String id : associatedIdStore.keySet()){
 			// Get associated ID, find expression, see if we should delete it
 			AssociatedId a = associatedIdStore.get(id);
+			if(a.sessionId == staticSessionId) return; // Don't remove static
 			Expression e = getExpression(a.expressionId);
 			int validDuration = e.validDuration;
 			if(validDuration < java.util.Calendar.getInstance().getTimeInMillis() - a.creationTime){
@@ -122,7 +123,8 @@ public class HashMapStore extends AbstractStore {
 	@Override
 	public String createAssociatedId(int sessionId, int expressionId) {
 		// Clear a space if it's already taken
-		if(getAssociatedIds(sessionId, expressionId).length > getWindowSize(expressionId)){
+		// There is no space limit for static sessionId
+		if(sessionId != staticSessionId && getAssociatedIds(sessionId, expressionId).length > getWindowSize(expressionId)){
 			deleteOldestAssociatedId(sessionId, expressionId);
 		}
 
@@ -134,6 +136,7 @@ public class HashMapStore extends AbstractStore {
 
 	@Override
 	public void deleteOldestAssociatedId(int sessionId, int expressionId) {
+		if(sessionId == staticSessionId) return;
 		// Get all current items
 		String[] ids = getAssociatedIds(sessionId, expressionId);
 		String minId = ids[0];
@@ -165,5 +168,4 @@ public class HashMapStore extends AbstractStore {
 		if(a == null) return -1;
 		return a.expressionId;
 	}
-
 }
