@@ -15,19 +15,70 @@ import static org.junit.Assert.*;
 public class JavaScriptFilePreParserTest {
 
 	@Test
-	public void evaluateTest1() throws Exception {
+	public void basicTest() throws Exception {
 		String result = testFile("TESTINPUT/basic_test.js");
 		assertTrue("Should have replaced all ids", doesNotContainId(result));
 		assertTrue("Should have replaced all definition blocks", doesNotContainBlocks(result));
-		System.out.println(result);
 		
 		// Ok, make sure the item was added to the store
 		AbstractStore store = JavaScriptLogger.getStore();
 		Expression e = new Expression(5, "/^basic_test$/sim", true, 2);
 		int expressionId = store.storeExpression(e);
 		String[] ids = store.getAssociatedIds(getSessionId(), expressionId);
-		System.out.println(ids.length);
 		assertTrue("Should insert it just once", ids.length == 1);
+	}
+
+	@Test
+	public void multipleLogCallsTest() throws Exception {
+		String result = testFile("TESTINPUT/multiple_log_calls.js");
+		assertTrue("Should have replaced all ids", doesNotContainId(result));
+		assertTrue("Should have replaced all definition blocks", doesNotContainBlocks(result));
+
+		// Ok, make sure the item was added to the store only once
+		AbstractStore store = JavaScriptLogger.getStore();
+		Expression e = new Expression(5, "/^multiple_log_calls$/sim", true, 2);
+		int expressionId = store.storeExpression(e);
+		String[] ids = store.getAssociatedIds(getSessionId(), expressionId);
+		assertTrue("Should insert it just once", ids.length == 1);
+	}
+
+	@Test
+	public void multipleBlocksTest() throws Exception {
+		String result = testFile("TESTINPUT/multiple_blocks.js");
+		assertTrue("Should have replaced all ids", doesNotContainId(result));
+		assertTrue("Should have replaced all definition blocks", doesNotContainBlocks(result));
+
+		// Ok, make sure each item was added to the store only once
+		AbstractStore store = JavaScriptLogger.getStore();
+		Expression e1 = new Expression(5, "/^multiple_blocks1$/sim", true, 2);
+		Expression e2 = new Expression(5, "/^multiple_blocks2$/sim", true, 2);
+		int expressionId1 = store.storeExpression(e1);
+		int expressionId2 = store.storeExpression(e2);
+		String[] ids1 = store.getAssociatedIds(getSessionId(), expressionId1);
+		String[] ids2 = store.getAssociatedIds(getSessionId(), expressionId2);
+		assertTrue("Should insert it just once", ids1.length == 1);
+		assertTrue("Should insert it just once", ids2.length == 1);
+	}
+
+	@Test
+	public void unmatchedLogCallsTest() throws Exception {
+		String result = testFile("TESTINPUT/unmatched_log_calls.js");
+		assertTrue("Should have not replaced all ids", !doesNotContainId(result));
+		assertTrue("Should have replaced all definition blocks", doesNotContainBlocks(result));
+		assertTrue("Should have replaced all of the first type", result.indexOf("$id=5") < 0);
+	}
+
+	@Test
+	public void notDefaultParametersTest() throws Exception {
+		String result = testFile("TESTINPUT/non_default_parameters.js");
+		assertTrue("Should have replaced all definition blocks", doesNotContainBlocks(result));
+
+		// Ok, make sure each item was added to the store only once
+		AbstractStore store = JavaScriptLogger.getStore();
+		Expression e = new Expression(91, "/^non_default_parameters$/sim", false, 6);
+		int expressionId = store.storeExpression(e);
+		String[] ids1 = store.getAssociatedIds(getSessionId(), expressionId);
+		assertTrue("Should insert it just once", ids1.length == 1);
 	}
 	
 	@Test
@@ -57,9 +108,14 @@ public class JavaScriptFilePreParserTest {
 	////////////////////////////////////////////////////////
 	// HELPER METHODs
 	////////////////////////////////////////////////////////
+	/**
+	 * Gets a dummy session ID based off localhost IP
+	 * @return
+	 */
 	private int getSessionId(){
 		return JavaScriptLogger.getSessionId(SessionType.IP, "127.0.0.1");
 	}
+
 	private SessionMapper mapper = null;
 	/**
 	 * Builds a dummy mapper for us
@@ -105,6 +161,4 @@ public class JavaScriptFilePreParserTest {
 	private boolean doesNotContainBlocks(String s){
 		return s.indexOf("/**#") < 0 && s.indexOf("#**/") < 0;
 	}
-	
-
 }
