@@ -95,7 +95,7 @@ public class JavaScriptFilePreParser {
 			String comment_block = comment_blocks.get(i);
 			val_dur_list.add(Integer.parseInt(extract("@valid-duration", comment_block).trim()));
 			express_list.add(extract("@validate", comment_block).trim());
-			run_once_list.add(Boolean.parseBoolean(extract("@run-once", comment_block).trim()) && !staticFile); // Can't be run-once inside a static file;
+			run_once_list.add(!staticFile && Boolean.parseBoolean(extract("@run-once", comment_block).trim())); // Can't be run-once inside a static file;
 			window_list.add(Integer.parseInt(extract("@window-size", comment_block).trim()));
 			id_list.add(extract("@id", comment_block).trim());
 		}
