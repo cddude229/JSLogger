@@ -8,6 +8,18 @@
 	<classpathentry kind="lib" path="lib/sqlitejdbc-v056.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.11.jar"/>
 	<classpathentry kind="lib" path="lib/sqlite-jdbc-3.7.2.jar"/>
+	<classpathentry kind="lib" path="lib/commons-configuration-1.9-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/commons-configuration-1.9-sources.jar"/>
+	<classpathentry kind="lib" path="lib/commons-configuration-1.9.jar"/>
+	<classpathentry kind="lib" path="lib/commons-collections-3.2.1-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/commons-collections-3.2.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang-2.6-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang-2.6-sources.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang-2.6.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.1.1-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.1.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
