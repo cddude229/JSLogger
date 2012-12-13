@@ -26,24 +26,24 @@ Sessions
 	
 	
 	
-CREATE TABLE Expressions
-(id INTEGER NOT NULL,
-validDuration INTEGER,
-creationTime INTEGER,
-expression TEXT(25),
-runOnce INTEGER,
-windowSize INTEGER,
-PRIMARY KEY (id))
+"CREATE TABLE Expressions " +
+""(id INTEGER NOT NULL, " +
+"validDuration INTEGER, " +
+"creationTime INTEGER, " +
+"expression TEXT(25), " +
+"runOnce INTEGER, " +
+"windowSize INTEGER, " +
+"PRIMARY KEY (id)) "
 
-CREATE TABLE AssociatedId
-(id VARCHAR(25) NOT NULL,
-sessionId INTEGER,
-expressionId INTEGER,
-creationTime INTEGER,
-PRIMARY KEY (id))
+"CREATE TABLE AssociatedId " +
+"(id VARCHAR(25) NOT NULL, " +
+"sessionId INTEGER, " +
+"expressionId INTEGER, " +
+"creationTime INTEGER, " +
+"PRIMARY KEY (id)) "
 
-CREATE TABLE Sessions
-(id INTEGER NOT NULL,
-type INTEGER,
-value VARCHAR(50),
-PRIMARY KEY (id))
+"CREATE TABLE Sessions " +
+"(id INTEGER NOT NULL, " +
+"type INTEGER, " +
+"value VARCHAR(50), " +
+"PRIMARY KEY (id)) "

@@ -24,14 +24,14 @@ public class AllStoreTest {
 		runTestSuite(new HashMapStore());
 	}
 	
-	/*
-	TODO: @Chris When SQLiteStore is done, enable this test
 	
+	//TODO: @Chris When SQLiteStore is done, enable this test
+	//UNCOMMENTED THS
 	@Test
 	public void testSQLiteStore() throws Exception {
 		runTestSuite(new SQLiteStore());
 	}
-	*/
+	
 
 	private void runTestSuite(AbstractStore store){
 		// Expressions
