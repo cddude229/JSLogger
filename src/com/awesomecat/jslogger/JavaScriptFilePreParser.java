@@ -89,7 +89,6 @@ public class JavaScriptFilePreParser {
 		return output;
 	}
 	public static String evaluateString(String content, SessionMapper mapper){
-		// TODO: @Aaron Write our file parser
 		ArrayList<String> comment_blocks = new ArrayList<String>();
 		//grabs comment values
 		Pattern p1 = Pattern.compile("/\\*\\*#(.*?)#\\*\\*/", Pattern.DOTALL);
@@ -123,7 +122,7 @@ public class JavaScriptFilePreParser {
 			new_id_list.add(mapper.registerExpressionAndGetAssociatedId(expression));
 		}
 		//update new_content
-		//TODO only replaces in a log line
+		// TODO: @Aaron: Make this only replace inside a logger.log() call, instead of generically throughout the file
 		Pattern p3 = Pattern.compile("\"(\\$id=[^\\s\\t]+)\"\\)", Pattern.DOTALL);
 		Matcher regexMatcher3 = p3.matcher(new_content);
 		while (regexMatcher3.find()) {

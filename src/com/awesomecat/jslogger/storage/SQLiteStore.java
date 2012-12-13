@@ -1,7 +1,7 @@
 package com.awesomecat.jslogger.storage;
 
 
-// TODO: @Chris Implement SQLiteStore for when we need static to be stored over time and survive a restart
+// TODO: @Chris: Implement SQLiteStore
 public class SQLiteStore extends AbstractStore {
 
 	@Override

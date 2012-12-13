@@ -65,7 +65,14 @@ public class HashMapStore extends AbstractStore {
 
 	@Override
 	public void deleteExpiredAssociatedIds() {
-		// TODO: @Chris delete expired associated IDs
+		// TODO: @UNASSIGNED: delete expired associated IDs in HashMapStore
+		/*
+		 * Steps:
+		 * 1) Iterate over all associated IDs
+		 * 2) Find the corresponding matching Expression
+		 * 3) Get validDuration from Expression
+		 * 4) if validDuration < currentTime - associatedId.creationTime, then delete it (use deleteAssociatedId(String id))
+		 */
 	}
 
 	@Override
