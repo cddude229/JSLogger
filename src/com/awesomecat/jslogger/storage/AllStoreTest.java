@@ -68,10 +68,10 @@ public class AllStoreTest {
 	}
 
 	private void testStoredExpressionShouldEqualInput(AbstractStore store){
-		Expression e = new Expression();
+		Expression e = new Expression(1, "hello", true, 5);
 		int id = store.storeExpression(e);
 		assertTrue(
-			"Stored expression (default constructor) should equal the input",
+			"Stored expression should equal the input",
 			e.equals(store.getExpression(id))
 		);
 
@@ -84,7 +84,7 @@ public class AllStoreTest {
 	}
 
 	private void testCreatingAssociatedIds(AbstractStore store){
-		Expression e = new Expression();
+		Expression e = new Expression(1, "hello", true, 4);
 		String ip = "123.245.123.245";
 		int expressionId = store.storeExpression(e);
 		int sessionId = store.getSessionId(SessionType.IP, ip);
