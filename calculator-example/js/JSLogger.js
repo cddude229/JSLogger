@@ -3,11 +3,11 @@ function Logger(url){
     this.url = url;
 };
 // Add methods like this.
-Logger.prototype.log = function(error, index){
+Logger.prototype.log = function(message, logid){
     $.ajax({
-	       type: 'POST',
+	       type: 'GET',
 	       url: this.url,
-	       data: {error: error, index: index},
+	       data: {message: message, logid: logid, jsLogger:1},
 	       contentType: 'application/json; charset=utf-8'
 	   });
 };
