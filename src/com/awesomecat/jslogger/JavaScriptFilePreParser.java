@@ -20,12 +20,21 @@ public class JavaScriptFilePreParser {
 	public static void main(String[] args){
 		String content = 
 			"/**# \n" +
+			"* @valid-duration 5 \n" +
 			"* @run-once true \n" +
 			"* @window-size 2 \n" +
-			"* @validate /^hello-world$/sim \n" +
-			"* @id 5" +
-			"#**/" +
-			"logger.log(\"blah\", \"$id=5\")";
+			"* @validate /^hello-world1$/sim \n" +
+			"* @id 5 \n" +
+			"#**/ \n" +
+			"logger.log(\"blah\", \"$id=5\") \n" +
+			"/**# \n" +
+			"* @valid-duration 3 \n" +
+			"* @run-once false \n" +
+			"* @window-size 1 \n" +
+			"* @validate /^hello-world2$/sim \n" +
+			"* @id 4 \n" +
+			"#**/ \n" +
+			"logger.log(\"blah\", \"$id=4\")";
 		SessionMapper mapper = new SessionMapper(5, new HashMapStore());
 		System.out.println(evaluateString(content, mapper));
 		
@@ -56,13 +65,27 @@ public class JavaScriptFilePreParser {
 	 * @return
 	 */
 	public static String extract(String str_id, String comment_block){
-		Pattern p = Pattern.compile("\\s*\\* "+str_id+"\\s([^\\s]+)", Pattern.DOTALL);
+		Pattern p = Pattern.compile("[\\s\\t]*\\* "+str_id+"[\\s\\t]([^\\s\\t]+)", Pattern.DOTALL);
 		Matcher regexMatcher = p.matcher(comment_block);
 		String output = "";
 		while (regexMatcher.find()) {
-			System.out.println(str_id + " "+ regexMatcher.group(1));
 			output = regexMatcher.group(1);
-		} 
+		}
+		if(output.equals("") && str_id.equals("@valid-duration")){
+			output = "5";
+		}
+		if(output.equals("") && str_id.equals("@validate")){
+			output = "";
+		}
+		if(output.equals("") && str_id.equals("@run-once")){
+			output = "false";
+		}
+		if(output.equals("") && str_id.equals("@window-size")){
+			output = "2";
+		}
+		if(output.equals("") && str_id.equals("@id")){
+			output = "";
+		}
 		return output;
 	}
 	public static String evaluateString(String content, SessionMapper mapper){
@@ -72,8 +95,6 @@ public class JavaScriptFilePreParser {
 		Pattern p1 = Pattern.compile("/\\*\\*#(.*?)#\\*\\*/", Pattern.DOTALL);
 		Matcher regexMatcher1 = p1.matcher(content);
 		while (regexMatcher1.find()) {
-			System.out.println("Comment---------------");
-			System.out.println(regexMatcher1.group(1));
 			comment_blocks.add(regexMatcher1.group(1));
 		} 
 		//deletes comments
@@ -81,7 +102,6 @@ public class JavaScriptFilePreParser {
 		Matcher regexMatcher2 = p2.matcher(content);
 		String new_content = regexMatcher2.replaceAll("");
 		//parses comments
-		System.out.println("parsing---------------");
 		ArrayList<Integer> val_dur_list = new ArrayList<Integer>();
 		ArrayList<String> express_list = new ArrayList<String>();
 		ArrayList<Boolean> run_once_list = new ArrayList<Boolean>();
@@ -89,7 +109,7 @@ public class JavaScriptFilePreParser {
 		ArrayList<String> id_list = new ArrayList<String>();
 		for(int i=0; i<comment_blocks.size(); i++){
 			String comment_block = comment_blocks.get(i);
-			val_dur_list.add(0);
+			val_dur_list.add(Integer.parseInt(extract("@valid-duration", comment_block).trim()));
 			express_list.add(extract("@validate", comment_block).trim());
 			run_once_list.add(Boolean.parseBoolean(extract("@run-once", comment_block).trim()));
 			window_list.add(Integer.parseInt(extract("@window-size", comment_block).trim()));
@@ -103,12 +123,18 @@ public class JavaScriptFilePreParser {
 			new_id_list.add(mapper.registerExpressionAndGetAssociatedId(expression));
 		}
 		//update new_content
-		Pattern p3 = Pattern.compile("$id=([^\\s]+)", Pattern.DOTALL);
+		Pattern p3 = Pattern.compile("\"(\\$id=[^\\s\\t]+)\"\\)", Pattern.DOTALL);
 		Matcher regexMatcher3 = p3.matcher(new_content);
-		if (regexMatcher3.find()) {
-		    System.out.println(regexMatcher3.group(1));
+		while (regexMatcher3.find()) {
+			String id_val = regexMatcher3.group(1);
+			for(int i=0; i<id_list.size(); i++){
+				if(id_list.get(i).equals(id_val.substring(4))){
+					Pattern p4 = Pattern.compile("\\"+id_val, Pattern.DOTALL);
+					Matcher regexMatcher4 = p4.matcher(new_content);
+					new_content = regexMatcher4.replaceAll(new_id_list.get(i));
+				}
+			}
 		}
-		String new_content2 = regexMatcher3.replaceAll("");
 		return new_content;
 	}
 
