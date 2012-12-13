@@ -13,10 +13,11 @@ public class JavaScriptFilePreParser {
 	 * Takes the specified file and will evaluate it
 	 * @param file The file to parse
 	 * @param mapper The session mapper that we use to obtain IDs
+	 * @param staticFile Should saved expressions be static files?
 	 * @return The now parsed JavaScript file to be rendered to the user 
 	 * @throws FileNotFoundException
 	 */
-	public static String evaluateFile(File file, SessionMapper mapper) throws FileNotFoundException {
+	public static String evaluateFile(File file, SessionMapper mapper, boolean staticFile) throws FileNotFoundException {
 		if(file.exists() == false) throw new RuntimeException("File does not exist.");
 		if(file.isDirectory() == true) throw new RuntimeException("File is a directory.");
 		if(file.canRead() == false) throw new RuntimeException("Must be able to read the file.");
@@ -31,7 +32,10 @@ public class JavaScriptFilePreParser {
 	    } finally {
 	    	scanner.close();
 	    }
-		return evaluateString(text.toString(), mapper);
+		return evaluateString(text.toString(), mapper, staticFile);
+	}
+	public static String evaluateFile(File file, SessionMapper mapper) throws FileNotFoundException {
+		return evaluateFile(file, mapper, false);
 	}
 	private static String extract(String str_id, String comment_block){
 		Pattern p = Pattern.compile("[\\s\\t]*\\* "+str_id+"[\\s\\t]([^\\s\\t]+)", Pattern.DOTALL);
@@ -62,9 +66,10 @@ public class JavaScriptFilePreParser {
 	 * Will evaluate a string and add the expressions + associated IDs to mapper
 	 * @param content
 	 * @param mapper
+	 * @param staticFile
 	 * @return
 	 */
-	public static String evaluateString(String content, SessionMapper mapper){
+	public static String evaluateString(String content, SessionMapper mapper, boolean staticFile){
 		ArrayList<String> comment_blocks = new ArrayList<String>();
 		//grabs comment values
 		Pattern p1 = Pattern.compile("/\\*\\*#(.*?)#\\*\\*/", Pattern.DOTALL);
@@ -90,7 +95,7 @@ public class JavaScriptFilePreParser {
 			String comment_block = comment_blocks.get(i);
 			val_dur_list.add(Integer.parseInt(extract("@valid-duration", comment_block).trim()));
 			express_list.add(extract("@validate", comment_block).trim());
-			run_once_list.add(Boolean.parseBoolean(extract("@run-once", comment_block).trim()));
+			run_once_list.add(Boolean.parseBoolean(extract("@run-once", comment_block).trim()) && !staticFile); // Can't be run-once inside a static file;
 			window_list.add(Integer.parseInt(extract("@window-size", comment_block).trim()));
 			id_list.add(extract("@id", comment_block).trim());
 		}
@@ -98,7 +103,7 @@ public class JavaScriptFilePreParser {
 		ArrayList<String> new_id_list = new ArrayList<String>();
 		for(int i=0; i<id_list.size(); i++){
 			Expression expression = new Expression(val_dur_list.get(i),express_list.get(i),
-					run_once_list.get(i),window_list.get(i));
+					run_once_list.get(i),window_list.get(i), staticFile);
 			new_id_list.add(mapper.registerExpressionAndGetAssociatedId(expression));
 		}
 		//update new_content
