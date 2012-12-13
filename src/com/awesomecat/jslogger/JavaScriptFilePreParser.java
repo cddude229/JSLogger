@@ -10,13 +10,6 @@ import com.awesomecat.jslogger.storage.Expression;
 import com.awesomecat.jslogger.storage.HashMapStore;
 
 public class JavaScriptFilePreParser {
-	/**
-	 * Takes the specified file and will evaluate it
-	 * @param file The file to parse
-	 * @param mapper The session mapper that we use to obtain IDs
-	 * @return The now parsed JavaScript file to be rendered to the user 
-	 * @throws FileNotFoundException
-	 */
 	public static void main(String[] args){
 		String content = 
 			"/**# \n" +
@@ -39,7 +32,14 @@ public class JavaScriptFilePreParser {
 		System.out.println(evaluateString(content, mapper));
 		
 	}
-	
+
+	/**
+	 * Takes the specified file and will evaluate it
+	 * @param file The file to parse
+	 * @param mapper The session mapper that we use to obtain IDs
+	 * @return The now parsed JavaScript file to be rendered to the user 
+	 * @throws FileNotFoundException
+	 */
 	public static String evaluateFile(File file, SessionMapper mapper) throws FileNotFoundException {
 		if(file.exists() == false) throw new RuntimeException("File does not exist.");
 		if(file.isDirectory() == true) throw new RuntimeException("File is a directory.");
@@ -57,14 +57,7 @@ public class JavaScriptFilePreParser {
 	    }
 		return evaluateString(text.toString(), mapper);
 	}
-
-	/**
-	 * Will evaluate a string and add the expressions + associated IDs to mapper
-	 * @param content
-	 * @param mapper
-	 * @return
-	 */
-	public static String extract(String str_id, String comment_block){
+	private static String extract(String str_id, String comment_block){
 		Pattern p = Pattern.compile("[\\s\\t]*\\* "+str_id+"[\\s\\t]([^\\s\\t]+)", Pattern.DOTALL);
 		Matcher regexMatcher = p.matcher(comment_block);
 		String output = "";
@@ -89,6 +82,13 @@ public class JavaScriptFilePreParser {
 		}
 		return output;
 	}
+
+	/**
+	 * Will evaluate a string and add the expressions + associated IDs to mapper
+	 * @param content
+	 * @param mapper
+	 * @return
+	 */
 	public static String evaluateString(String content, SessionMapper mapper){
 		ArrayList<String> comment_blocks = new ArrayList<String>();
 		//grabs comment values
