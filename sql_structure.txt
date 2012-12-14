@@ -29,17 +29,17 @@ Sessions
 "CREATE TABLE Expressions " +
 ""(id INTEGER NOT NULL, " +
 "validDuration INTEGER, " +
-"creationTime INTEGER, " +
+"creationTimeE INTEGER, " +
 "expression TEXT(25), " +
 "runOnce INTEGER, " +
 "windowSize INTEGER, " +
 "PRIMARY KEY (id)) "
 
 "CREATE TABLE AssociatedId " +
-"(id VARCHAR(25) NOT NULL, " +
+"(associatedId VARCHAR(25) NOT NULL, " +
 "sessionId INTEGER, " +
 "expressionId INTEGER, " +
-"creationTime INTEGER, " +
+"creationTimeA INTEGER, " +
 "PRIMARY KEY (id)) "
 
 "CREATE TABLE Sessions " +

@@ -185,7 +185,7 @@ public abstract class AbstractStore {
 	public boolean matchAssociatedId(String associatedId, int sessionId, int expressionId, boolean deleteOnDiscovery){
 		String[] ids = getAssociatedIds(sessionId, expressionId);
 		for(String s : ids){
-			if(s.equals(associatedId)){
+			if(s != null && s.equals(associatedId)){
 				if(deleteOnDiscovery){
 					deleteAssociatedId(associatedId);
 				}
