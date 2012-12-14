@@ -85,12 +85,15 @@ public class AllStoreTest {
 		String ip = "123.245.123.245";
 		int expressionId = store.storeExpression(e);
 		int sessionId = store.getSessionId(SessionType.IP, ip);
-		String assocId1= store.createAssociatedId(sessionId, expressionId);
+		String assocId1 = store.createAssociatedId(sessionId, expressionId);
 		
 		// see if getAssociatedIds contains it...
 		boolean found = false;
 		for(String s : store.getAssociatedIds(sessionId, expressionId)){
-			found = found || s.equals(assocId1);
+			if(s == null){
+				assertTrue("getAssociatedIds should never return null", false);
+			}
+			found = found || assocId1.equals(s);
 		}
 		assertTrue("Created ID was in getAssociatedIds", found);
 		

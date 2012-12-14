@@ -182,13 +182,17 @@ public class SQLiteStore extends AbstractStore {
 			rs = statement.executeQuery("SELECT * from AssociatedId WHERE "
 					+ "sessionId=" + sessionId + " AND " + "expressionId=" + expressionId);
 			while (rs.next() && counter<windowSize) {
-				s[counter] = rs.getString("associatedId");
-				counter++;
+				s[counter++] = rs.getString("associatedId");
+				if(counter == windowSize) return s;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return s;
+		String[] s2 = new String[counter];
+		for(int i=0;i<counter;i++){
+			s2[i] = s[i];
+		}
+		return s2;
 	}
 
 	@Override
