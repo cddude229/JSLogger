@@ -17,9 +17,11 @@ public final class PreParseFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
 		String path = getPath(req);
+		System.out.println("calling preparse");
 
 		// See if it's a JS file and then pre-parse
 		if(req.getParameter("noparse") == null && path.length() > 4 && path.substring(path.length()-3).toLowerCase().equals(".js")){
+			System.out.println("preparsing");
 			File f = new File(path);
 			SessionMapper mapper = JavaScriptLogger.buildSessionMapper(
 				JavaScriptLogger.getSessionId(req)
