@@ -8,6 +8,7 @@
 		</defaultValues>
 	</blocks>
 	<associatedIdLength>15</associatedIdLength>
+	<databaseFile>./jslogger-data.db</databaseFile>
 	<rateLimit>
 		<pastMinutesToKeep>5</pastMinutesToKeep>
 		<dataLimit>5</dataLimit> <!--  in kb/minute -->

@@ -6,6 +6,8 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.awesomecat.jslogger.JavaScriptLogger;
+
 public class SQLiteStore extends AbstractStore {
 	Connection connection;
 	Statement statement;
@@ -16,7 +18,7 @@ public class SQLiteStore extends AbstractStore {
 		try {
 			// create a database connection
 			connection = DriverManager
-					.getConnection("jdbc:sqlite:./mydatabase.db");
+					.getConnection("jdbc:sqlite:"+JavaScriptLogger.getConfig().getString("databaseFile"));
 			statement = connection.createStatement();
 			statement.setQueryTimeout(30); // set timeout to 30 sec.
 			statement.executeUpdate("CREATE TABLE if not exists Expressions "
