@@ -1,0 +1,15 @@
+.center
+{
+  text-align:center;
+  margin-left: auto;
+}
+textarea
+{ 
+  width: 300px;
+  height: 120px;  
+}
+div#results
+{
+  border-style:solid;
+  border-width:2px;  
+}
