@@ -29,6 +29,7 @@ public class JavaScriptLogger {
     private static AbstractStore store = new HashMapStore();
     private static Level jsLogLevel = Level.ERROR;
     private static Configuration config = null;
+    private static RateLimiter rateLimiter = new RateLimiter();
 
     public static void main(String[] args) throws IOException {
     	// This is how we create static files on the fly
@@ -99,6 +100,9 @@ public class JavaScriptLogger {
         // No null values allowed
     	if(message == null || associatedId == null) return false;
     	
+    	// Check if the session ID is currently rate limited
+    	if(rateLimiter.isUserLimited(sessionId)) return false;
+    	
     	// Validate that the log id exists
     	int expressionId = store.getExpressionIdFromAssociatedId(associatedId);
 
@@ -117,6 +121,7 @@ public class JavaScriptLogger {
     	
     	// Ok, lastly, let's log the message.
     	logger.log(jsLogLevel, message);
+    	rateLimiter.addData(sessionId, 1, message.length());
     	
     	return true;
     }
