@@ -27,12 +27,12 @@ public class SQLiteStore extends AbstractStore {
 			statement.setQueryTimeout(30); // set timeout to 30 sec.
 			statement.executeUpdate("CREATE TABLE if not exists Expressions "
 					+ "(id INTEGER NOT NULL, " + "validDuration INTEGER, "
-					+ "creationTimeE INTEGER, " + "expression TEXT(25), "
+					+ "creationTimeE LONG, " + "expression TEXT(25), "
 					+ "runOnce INTEGER, " + "windowSize INTEGER, "
 					+ "PRIMARY KEY (id)) ");
 			statement.executeUpdate("CREATE TABLE if not exists AssociatedId "
 					+ "(associatedId VARCHAR(25) NOT NULL, " + "sessionId INTEGER, "
-					+ "expressionId INTEGER, " + "creationTimeA INTEGER, "
+					+ "expressionId INTEGER, " + "creationTimeA LONG, "
 					+ "PRIMARY KEY (associatedId)) ");
 			statement.executeUpdate("CREATE TABLE if not exists Sessions "
 					+ "(id INTEGER NOT NULL, " + "type INTEGER, "
@@ -143,17 +143,19 @@ public class SQLiteStore extends AbstractStore {
 
 	@Override
 	public void deleteExpiredAssociatedIds() {
-		int validDuration;
-		int creationTime;
+		int validDuration, sessionId;
+		long creationTime;
 		String ass_id;
 		try {
 			ResultSet rs = statement.executeQuery("SELECT * from AssociatedId LEFT JOIN Expressions" +
 					" ON AssociatedId.expressionId=Expressions.id");
 			while (rs.next()) {
+				
 				validDuration = rs.getInt("validDuration");
-				creationTime = rs.getInt("creationTimeA");
+				creationTime = rs.getLong("creationTimeA");
+				sessionId = rs.getInt("sessionId");
 				ass_id = rs.getString("associatedId");
-				if(validDuration<creationTime){
+				if(sessionId != staticSessionId && validDuration < java.util.Calendar.getInstance().getTimeInMillis() - creationTime){
 					deleteAssociatedId(ass_id);
 				}
 			}
@@ -197,11 +199,18 @@ public class SQLiteStore extends AbstractStore {
 
 	@Override
 	public String createAssociatedId(int sessionId, int expressionId) {
+		// Clear a space if it's already taken
+		// There is no space limit for static sessionId
+		if(sessionId != staticSessionId && getAssociatedIds(sessionId, expressionId).length >= getWindowSize(expressionId)){
+			deleteOldestAssociatedId(sessionId, expressionId);
+		}
+
 		String ass_id = generateAssociatedId();
 		String out_string = ass_id;
+		long creationTime = (sessionId == staticSessionId?Long.MAX_VALUE:java.util.Calendar.getInstance().getTimeInMillis());
 		try {
 			statement.executeUpdate("INSERT into AssociatedId VALUES(" + "'"+ass_id+"'"
-					+ "," + sessionId + "," + expressionId + "," +Expression.getCurrentTime()+")");
+					+ "," + sessionId + "," + expressionId + ","+creationTime+")");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -210,9 +219,13 @@ public class SQLiteStore extends AbstractStore {
 
 	@Override
 	public void deleteOldestAssociatedId(int sessionId, int expressionId) {
+		System.out.println(sessionId);
+		System.out.println(staticSessionId);
+		if(sessionId == staticSessionId) return;
 		try {
-			statement.executeUpdate("delete from AssociatedId as a where " +
-					"a.[creationTimeA]= (select min([creationTimeA]) from AssociatedId)");
+			statement.executeUpdate("delete from AssociatedId where " +
+					"creationTimeA = (select min([creationTimeA]) from AssociatedId where sessionId = '"+sessionId+"' AND expressionId = '"+expressionId+"')" + 
+					" AND sessionId = '"+sessionId+"' AND expressionId = '"+expressionId+"'");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

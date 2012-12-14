@@ -29,10 +29,10 @@ public class AllStoreTest {
 		runTestSuite(new SQLiteStore());
 	}
 	
-
 	private void runTestSuite(AbstractStore store){
 		// Expressions
 		testStoredExpressionShouldEqualInput(store);
+		testWindowSize(store);
 
 		// Sessions
 		testSameIp(store);
@@ -41,6 +41,8 @@ public class AllStoreTest {
 
 		// Associated IDs
 		testCreatingAssociatedIds(store);
+		testWindowSizeLimit1(store);
+		testWindowSizeLimit2(store);
 	}
 
 	private void testSameIp(AbstractStore store){
@@ -65,14 +67,14 @@ public class AllStoreTest {
 	}
 
 	private void testStoredExpressionShouldEqualInput(AbstractStore store){
-		Expression e = new Expression(1, "hello", true, 5);
+		Expression e = new Expression(51, "hello", true, 5);
 		int id = store.storeExpression(e);
 		assertTrue(
 			"Stored expression should equal the input",
 			e.equals(store.getExpression(id))
 		);
 
-		Expression e2 = new Expression(r.nextInt(), "Some expression", true, r.nextInt());
+		Expression e2 = new Expression(53, "Some expression", true, r.nextInt());
 		int id2 = store.storeExpression(e2);
 		assertTrue(
 			"Stored expression (NOT default constructor) should equal the input",
@@ -81,7 +83,7 @@ public class AllStoreTest {
 	}
 
 	private void testCreatingAssociatedIds(AbstractStore store){
-		Expression e = new Expression(1, "hello", true, 4);
+		Expression e = new Expression(50, "hello", true, 2);
 		String ip = "123.245.123.245";
 		int expressionId = store.storeExpression(e);
 		int sessionId = store.getSessionId(SessionType.IP, ip);
@@ -95,7 +97,7 @@ public class AllStoreTest {
 			}
 			found = found || assocId1.equals(s);
 		}
-		assertTrue("Created ID was in getAssociatedIds", found);
+		assertTrue("Created ID was not found in getAssociatedIds", found);
 		
 		// Now, see if match works
 		assertTrue("Associated id should match session and expression id", store.matchAssociatedId(assocId1, sessionId, expressionId));
@@ -121,6 +123,39 @@ public class AllStoreTest {
 			"Associated id deleted with matchAssociatedId should not be found",
 			store.matchAssociatedId(assocId2, sessionId, expressionId)
 		);
-
 	}
+
+	private void testWindowSize(AbstractStore store){
+		Expression e = new Expression(55, "windowdinwo", true, 56);
+		int expressionId = store.storeExpression(e);
+		assertEquals("Window size should match input", 56, store.getWindowSize(expressionId));
+	}
+
+	private void testWindowSizeLimit1(AbstractStore store){
+		Expression e = new Expression(50, "helloworld", true, 1);
+		String ip = "123.245.123.245";
+		int expressionId = store.storeExpression(e);
+		int sessionId = store.getSessionId(SessionType.IP, ip);
+		String assocId1 = store.createAssociatedId(sessionId, expressionId);
+		try { Thread.sleep(10); } catch (InterruptedException e1) {}
+		String assocId2 = store.createAssociatedId(sessionId, expressionId);
+		assertFalse("Should not contain old associd", store.matchAssociatedId(assocId1, sessionId, expressionId));
+		assertTrue("Should contain new associd", store.matchAssociatedId(assocId2, sessionId, expressionId));
+	}
+
+	private void testWindowSizeLimit2(AbstractStore store){
+		Expression e = new Expression(50, "helloworld", true, 2);
+		String ip = "123.245.123.245";
+		int expressionId = store.storeExpression(e);
+		int sessionId = store.getSessionId(SessionType.IP, ip);
+		String assocId1 = store.createAssociatedId(sessionId, expressionId);
+		try { Thread.sleep(10); } catch (InterruptedException e1) {}
+		String assocId2 = store.createAssociatedId(sessionId, expressionId);
+		try { Thread.sleep(10); } catch (InterruptedException e1) {}
+		String assocId3 = store.createAssociatedId(sessionId, expressionId);
+		assertFalse("Should not contain first associd", store.matchAssociatedId(assocId1, sessionId, expressionId));
+		assertTrue("Should contain second associd", store.matchAssociatedId(assocId2, sessionId, expressionId));
+		assertTrue("Should contain third associd", store.matchAssociatedId(assocId3, sessionId, expressionId));
+	}
+
 }

@@ -14,6 +14,7 @@ import static org.junit.Assert.*;
 
 
 
+// NOTE: Known bug: rm jslogger-data.db before running this test
 public class JavaScriptFilePreParserTest {
 
 	@Test
