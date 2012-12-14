@@ -47,7 +47,7 @@ public class JavaScriptFilePreParser {
 			output = regexMatcher.group(1);
 		}
 		if(output.equals("") && str_id.equals("@valid-duration")){
-			if(comment_block.toLowerCase().contains(str_id.toLowerCase())){
+			if(!comment_block.toLowerCase().contains(str_id.toLowerCase())){
 				output = JavaScriptLogger.getConfig().getString("blocks.defaultValues.valid-duration");
 			}
 			else{
@@ -58,7 +58,7 @@ public class JavaScriptFilePreParser {
 			output="";
 		}
 		if(output.equals("") && str_id.equals("@run-once")){
-			if(comment_block.toLowerCase().contains(str_id.toLowerCase())){
+			if(!comment_block.toLowerCase().contains(str_id.toLowerCase())){
 				output = JavaScriptLogger.getConfig().getString("blocks.defaultValues.run-once");
 			}
 			else{
@@ -66,7 +66,7 @@ public class JavaScriptFilePreParser {
 			}
 		}
 		if(output.equals("") && str_id.equals("@window-size")){
-			if(comment_block.toLowerCase().contains(str_id.toLowerCase())){
+			if(!comment_block.toLowerCase().contains(str_id.toLowerCase())){
 				output = JavaScriptLogger.getConfig().getString("blocks.defaultValues.window-size");
 			}
 			else{
@@ -107,7 +107,7 @@ public class JavaScriptFilePreParser {
 			boolean run_once_bool;
 			int wind_size_int;
 			if (!PreParserHelper.validRegularExpression(express)){
-				System.out.println(run_once);			continue;
+				continue;
 			}
 			if (val_dur.equals("") || express.equals("") || run_once.equals("")
 					|| id_val.equals("") || window_size.equals("")
@@ -118,7 +118,6 @@ public class JavaScriptFilePreParser {
 				val_dur_int = Integer.parseInt(val_dur);
 				run_once_bool = Boolean.parseBoolean(run_once);
 				wind_size_int = Integer.parseInt(window_size);
-				
 			}
 			catch(Exception e){
 				continue;

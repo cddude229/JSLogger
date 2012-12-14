@@ -123,6 +123,7 @@ public class JavaScriptFilePreParserTest {
 			};
 			for(String file : files){
 				result = testFile(String.format("TESTINPUT/incorrect_parameter_%s.js", file));
+				System.out.println(file);
 				assertTrue(String.format("Should not have replaced all definition blocks (%s)", file), !doesNotContainBlocks(result));
 			}
 
