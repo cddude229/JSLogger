@@ -32,7 +32,7 @@ public class RateLimiter {
 	private final Map<Integer, RateDataSet> dataList;
 	
 	public static final int pastMinutesToKeep = JavaScriptLogger.getConfig().getInt("rateLimit.pastMinutesToKeep");
-	public static final int dataLimit = JavaScriptLogger.getConfig().getInt("rateLimit.dataLimit");
+	public static final int dataLimit = JavaScriptLogger.getConfig().getInt("rateLimit.dataLimit")*1024;
 	public static final int logsLimit = JavaScriptLogger.getConfig().getInt("rateLimit.logsLimit");
 	
 	public RateLimiter(){
@@ -44,14 +44,14 @@ public class RateLimiter {
 	 * Add a record of a user sending in a log message + some data
 	 * @param sessionId Identity of user
 	 * @param logs The number of log messages received
-	 * @param data The amount of data, in kilobytes, that has been used
+	 * @param dataInBytes The amount of data, in bytes, that has been used
 	 */
-	public void addData(int sessionId, int logs, int data){
+	public void addData(int sessionId, int logs, int dataInBytes){
 		// NOTE: We use logs (instead of assuming 1) because in the future, 
 		// the JS portion might build a bulk of messages before sending them
 		// Roll over to new minute
 		int newMinute = handleRollover();
-		dataList.get(newMinute).addUserUsage(sessionId, data);
+		dataList.get(newMinute).addUserUsage(sessionId, dataInBytes);
 		logsList.get(newMinute).addUserUsage(sessionId, logs);
 	}
 
