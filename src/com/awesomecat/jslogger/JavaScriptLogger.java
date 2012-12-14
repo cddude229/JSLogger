@@ -15,6 +15,10 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import com.awesomecat.jslogger.mapper.SessionMapper;
+import com.awesomecat.jslogger.mapper.StaticMapper;
+import com.awesomecat.jslogger.preparser.JavaScriptFilePreParser;
+import com.awesomecat.jslogger.preparser.PreParserHelper;
 import com.awesomecat.jslogger.storage.AbstractStore;
 import com.awesomecat.jslogger.storage.Expression;
 import com.awesomecat.jslogger.storage.HashMapStore;
@@ -25,6 +29,7 @@ public class JavaScriptLogger {
     private static AbstractStore store = new HashMapStore();
     private static Level jsLogLevel = Level.ERROR;
     private static Configuration config = null;
+    private static RateLimiter rateLimiter = new RateLimiter();
 
     public static void main(String[] args) throws IOException {
     	// This is how we create static files on the fly
@@ -95,6 +100,9 @@ public class JavaScriptLogger {
         // No null values allowed
     	if(message == null || associatedId == null) return false;
     	
+    	// Check if the session ID is currently rate limited
+    	if(rateLimiter.isUserLimited(sessionId)) return false;
+    	
     	// Validate that the log id exists
     	int expressionId = store.getExpressionIdFromAssociatedId(associatedId);
 
@@ -113,6 +121,7 @@ public class JavaScriptLogger {
     	
     	// Ok, lastly, let's log the message.
     	logger.log(jsLogLevel, message);
+    	rateLimiter.addData(sessionId, 1, message.length());
     	
     	return true;
     }
@@ -156,7 +165,7 @@ public class JavaScriptLogger {
     	for(String f : flags.split("")){
     		arrayListFlags.add(f);
     	}
-    	int flagsInt = PreParser.convertFlagsToConstants(arrayListFlags);
+    	int flagsInt = PreParserHelper.convertFlagsToConstants(arrayListFlags);
 
     	// Finish strong
     	return Pattern.compile(p, flagsInt);

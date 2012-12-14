@@ -8,4 +8,9 @@
 		</defaultValues>
 	</blocks>
 	<associatedIdLength>15</associatedIdLength>
+	<rateLimit>
+		<pastMinutesToKeep>5</pastMinutesToKeep>
+		<dataLimit>5</dataLimit> <!--  in kb/minute -->
+		<logsLimit>500</logsLimit> <!-- in logs/minute -->
+	</rateLimit>
 </jsLogger>

@@ -1,4 +1,4 @@
-package com.awesomecat.jslogger;
+package com.awesomecat.jslogger.mapper;
 
 import com.awesomecat.jslogger.storage.AbstractStore;
 import com.awesomecat.jslogger.storage.Expression;
@@ -6,10 +6,21 @@ import com.awesomecat.jslogger.storage.Expression;
 /**
  * Used to be able to register expressions and obtain associated IDs when parsing a file
  */
-public class StaticMapper implements Mapper {
+public class SessionMapper implements Mapper {
+	private final int sessionId;
 	private final AbstractStore store;
-	public StaticMapper(AbstractStore store){
+	public SessionMapper(int sessionId, AbstractStore store){
+		this.sessionId = sessionId;
 		this.store = store;
+	}
+
+	/**
+	 * Gets an associated ID given an expression ID
+	 * @param expressionId
+	 * @return
+	 */
+	private String getAssociatedId(int expressionId){
+		return store.createAssociatedId(sessionId, expressionId);
 	}
 
 	/**
@@ -27,7 +38,7 @@ public class StaticMapper implements Mapper {
 	 * @return The associated ID to be put into the log call
 	 */
 	public String registerExpressionAndGetAssociatedId(Expression expression){
-		return store.getStaticIdForExpression(registerExpression(expression));
+		return getAssociatedId(registerExpression(expression));
 	}
 
 }
