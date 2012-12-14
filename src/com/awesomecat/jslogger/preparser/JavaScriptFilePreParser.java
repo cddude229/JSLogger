@@ -122,10 +122,10 @@ public class JavaScriptFilePreParser {
 			catch(Exception e){
 				continue;
 			}
-			val_dur_list.add(Integer.parseInt(val_dur));
+			val_dur_list.add(val_dur_int);
 			express_list.add(express);
-			run_once_list.add(!staticFile && Boolean.parseBoolean(run_once)); // Can't be run-once inside a static file;
-			window_list.add(Integer.parseInt(window_size));
+			run_once_list.add(!staticFile && run_once_bool); // Can't be run-once inside a static file;
+			window_list.add(wind_size_int);
 			id_list.add(id_val);
 			regexMatcher1.appendReplacement(sb, "");
 		} 
