@@ -124,7 +124,7 @@ public class HashMapStore extends AbstractStore {
 	public String createAssociatedId(int sessionId, int expressionId) {
 		// Clear a space if it's already taken
 		// There is no space limit for static sessionId
-		if(sessionId != staticSessionId && getAssociatedIds(sessionId, expressionId).length > getWindowSize(expressionId)){
+		if(sessionId != staticSessionId && getAssociatedIds(sessionId, expressionId).length >= getWindowSize(expressionId)){
 			deleteOldestAssociatedId(sessionId, expressionId);
 		}
 

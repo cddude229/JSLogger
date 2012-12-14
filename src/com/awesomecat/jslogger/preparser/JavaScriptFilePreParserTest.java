@@ -14,6 +14,7 @@ import static org.junit.Assert.*;
 
 
 
+// NOTE: Known bug: rm jslogger-data.db before running this test
 public class JavaScriptFilePreParserTest {
 
 	@Test
@@ -27,7 +28,7 @@ public class JavaScriptFilePreParserTest {
 		Expression e = new Expression(5, "/^basic_test$/sim", true, 2);
 		int expressionId = store.storeExpression(e);
 		String[] ids = store.getAssociatedIds(getSessionId(), expressionId);
-		assertTrue("Should insert it just once", ids.length == 1);
+		assertEquals("Should insert it just once", 1, ids.length);
 	}
 
 	@Test
@@ -41,7 +42,7 @@ public class JavaScriptFilePreParserTest {
 		Expression e = new Expression(5, "/^multiple_log_calls$/sim", true, 2);
 		int expressionId = store.storeExpression(e);
 		String[] ids = store.getAssociatedIds(getSessionId(), expressionId);
-		assertTrue("Should insert it just once", ids.length == 1);
+		assertEquals("Should insert it just once", 1, ids.length);
 	}
 
 	@Test
@@ -58,8 +59,8 @@ public class JavaScriptFilePreParserTest {
 		int expressionId2 = store.storeExpression(e2);
 		String[] ids1 = store.getAssociatedIds(getSessionId(), expressionId1);
 		String[] ids2 = store.getAssociatedIds(getSessionId(), expressionId2);
-		assertTrue("Should insert it just once", ids1.length == 1);
-		assertTrue("Should insert it just once", ids2.length == 1);
+		assertEquals("Should insert it just once", 1, ids1.length);
+		assertEquals("Should insert it just once", 1, ids2.length);
 	}
 
 	@Test
@@ -79,37 +80,28 @@ public class JavaScriptFilePreParserTest {
 		AbstractStore store = JavaScriptLogger.getStore();
 		Expression e = new Expression(91, "/^non_default_parameters$/sim", false, 6);
 		int expressionId = store.storeExpression(e);
-		String[] ids1 = store.getAssociatedIds(getSessionId(), expressionId);
-		assertTrue("Should insert it just once", ids1.length == 1);
+		String[] ids = store.getAssociatedIds(getSessionId(), expressionId);
+		assertEquals("Should insert it just once", 1, ids.length);
 	}
 
 	@Test
 	public void invalidInputTest() throws Exception {
 		try {
 			String result;
+			String[] files = new String[]{
+				"blankid", "duration", "missingid", "runonce", "validate", "windowsize"
+			};
+			for(String file : files){
+				result = testFile(String.format("TESTINPUT/incorrect_parameter_%s.js", file));
+				assertTrue(String.format("Should not have replaced all definition blocks (%s)", file), !doesNotContainBlocks(result));
+			}
 
-			result = testFile("TESTINPUT/incorrect_parameter_blankid.js");
-			assertTrue("Should not have replaced all definition blocks (blank id)", !doesNotContainBlocks(result));
-
-			result = testFile("TESTINPUT/incorrect_parameter_duration.js");
-			assertTrue("Should not have replaced all definition blocks (duration)", !doesNotContainBlocks(result));
-
-			result = testFile("TESTINPUT/incorrect_parameter_missingid.js");
-			assertTrue("Should not have replaced all definition blocks (missing id)", !doesNotContainBlocks(result));
-
-			result = testFile("TESTINPUT/incorrect_parameter_runonce.js");
-			assertTrue("Should not have replaced all definition blocks (runonce)", !doesNotContainBlocks(result));
-
-			result = testFile("TESTINPUT/incorrect_parameter_validate.js");
-			assertTrue("Should not have replaced all definition blocks (validate)", !doesNotContainBlocks(result));
-
-			result = testFile("TESTINPUT/incorrect_parameter_windowsize.js");
-			assertTrue("Should not have replaced all definition blocks (windowsize)", !doesNotContainBlocks(result));
+			result = testFile("TESTINPUT/empty_block.js");
+			assertTrue("Should not have removed an empty comment block", !doesNotContainBlocks(result));
 
 		} catch(Exception e){
 			assertTrue("The JavaScriptFilePreParser should never throw an error for invalid parameters", false);
 		}
-		
 	}
 	
 	@Test
@@ -117,15 +109,15 @@ public class JavaScriptFilePreParserTest {
 		File file = new File("ASDFASDFASDF/file_does_not_exist.js");
 		try {
 			JavaScriptFilePreParser.evaluateFile(file, getMapper());
+			assertTrue("PreParser should error if file can't be found", false);
 		} catch(Exception e){
-			assertTrue("PreParser should error if file can't be found", true);
 		}
 		
 		File file2 = new File(".");
 		try {
 			JavaScriptFilePreParser.evaluateFile(file2, getMapper());
+			assertTrue("PreParser should error if given a directory", false);
 		} catch(Exception e){
-			assertTrue("PreParser should error if given a directory", true);
 		}
 		
 		// Did not write a test for no read perms

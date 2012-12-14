@@ -8,6 +8,8 @@
 		</defaultValues>
 	</blocks>
 	<associatedIdLength>15</associatedIdLength>
+	<databaseFile>./jslogger-data.db</databaseFile>
+	<persistData>true</persistData> <!--  If set to false, will not support static files either -->
 	<rateLimit>
 		<pastMinutesToKeep>5</pastMinutesToKeep>
 		<dataLimit>5</dataLimit> <!--  in kb/minute -->

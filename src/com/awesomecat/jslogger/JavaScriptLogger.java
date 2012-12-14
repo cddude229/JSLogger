@@ -22,11 +22,12 @@ import com.awesomecat.jslogger.preparser.PreParserHelper;
 import com.awesomecat.jslogger.storage.AbstractStore;
 import com.awesomecat.jslogger.storage.Expression;
 import com.awesomecat.jslogger.storage.HashMapStore;
+import com.awesomecat.jslogger.storage.SQLiteStore;
 import com.awesomecat.jslogger.storage.SessionType;
 
 public class JavaScriptLogger {
     private static Logger logger = Logger.getLogger("jslogger");
-    private static AbstractStore store = new HashMapStore();
+    private static AbstractStore store = (getConfig().getBoolean("persistData")?new SQLiteStore():new HashMapStore());
     private static Level jsLogLevel = Level.ERROR;
     private static Configuration config = null;
     private static RateLimiter rateLimiter = new RateLimiter();
