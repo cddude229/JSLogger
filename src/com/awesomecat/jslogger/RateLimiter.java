@@ -31,9 +31,9 @@ public class RateLimiter {
 	private final Map<Integer, RateDataSet> logsList;
 	private final Map<Integer, RateDataSet> dataList;
 	
-	private final int pastMinutesToKeep = 5; // TODO: @Chris: Make this load from configuration
-	private final int dataLimit = 0; // TODO: @Chris: Make this load from configuration
-	private final int logsLimit = 0; // TODO: @Chris: Make this load from configuration
+	private final int pastMinutesToKeep = JavaScriptLogger.getConfig().getInt("rateLimit.pastMinutesToKeep");
+	private final int dataLimit = JavaScriptLogger.getConfig().getInt("rateLimit.dataLimit");
+	private final int logsLimit = JavaScriptLogger.getConfig().getInt("rateLimit.logsLimit");
 	
 	public RateLimiter(){
 		logsList = new HashMap<Integer, RateDataSet>();
@@ -61,30 +61,32 @@ public class RateLimiter {
 	 * @return True if so, false otherwise
 	 */
 	public boolean isUserLimited(int sessionId){
-		// TODO: @Chris: Implement rate limiting the user
-		int currentData = dataOverLastXMinutes(dataList, pastMinutesToKeep, sessionId);
-		int currentLogs = dataOverLastXMinutes(logsList, pastMinutesToKeep, sessionId);
-		return currentData >= dataLimit || currentLogs >= logsLimit;
+		// Keep return on one line.  This short-circuits if they're over datalimit quickly
+		return 
+			dataOverLastXMinutes(dataList, pastMinutesToKeep, sessionId) >= dataLimit
+			|| dataOverLastXMinutes(logsList, pastMinutesToKeep, sessionId) >= logsLimit;
 	}
 	
 	/**
 	 * Determines the amount of data in dataSet used over the last X minutes by user identifier by sessionId
 	 * @param dataSet The dataSet to examine.
-	 * @param x The last x minutes to consider. 0 returns current minute only
+	 * @param x The last x minutes to consider. 1 returns current minute only
 	 * @param sessionId How we're identifying the user. Do not use static session ID
 	 * @return
 	 */
 	private int dataOverLastXMinutes(Map<Integer, RateDataSet> dataSet, int x, int sessionId){
-		assert(x >= 0 && sessionId >= 0);
+		assert(x > 0 && sessionId >= 0);
 		int currentMinute = handleRollover();
 		int currentData = 0;
-		for(int i=0;i<=x;i++){
+		int minutesExamined = 0; // Average over number examined, not last x potentially
+		for(int i=0;i<x;i++){
 			if(dataSet.containsKey(currentMinute)){
 				RateDataSet data = dataSet.get(currentMinute);
 				currentData += data.getUserUsage(sessionId);
+				minutesExamined++;
 			}
 		}
-		return currentData / (x+1);
+		return currentData / minutesExamined;
 	}
 
 	private int lastMinuteHandled = -1;
@@ -93,11 +95,14 @@ public class RateLimiter {
 	 * @return The new minute to use
 	 */
 	private int handleRollover(){
-		// TODO: Needs to clear old minutes outside of the current scope
 		int newMinute = getCurrentMinute();
 		if(newMinute != lastMinuteHandled){
-			// Updated minute.  Clear newMinute before writing to it
-			addDataSet(newMinute);
+			// Changed the current minute.
+			// We need to clear the minutes between lastMinuteHandled and newMinute (not including lastMinuteHandled.)
+			while((++lastMinuteHandled % 60) <= newMinute){
+				addDataSet(lastMinuteHandled % 60);
+			}
+
 			lastMinuteHandled = newMinute;
 		}
 		return newMinute;
