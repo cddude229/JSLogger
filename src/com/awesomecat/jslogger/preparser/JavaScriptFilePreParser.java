@@ -140,15 +140,17 @@ public class JavaScriptFilePreParser {
 		//update new_content
 		Pattern p3 = Pattern.compile(
 				"logger\\.log\\((.*?),[\\s\\t^\\n]*? " +
-				"\"(\\$id=[^\\s\\t]+)\"\\);", Pattern.DOTALL);
+				"\"(\\$id=.+?)\"(, .*?)?\\);", Pattern.DOTALL);
 		Matcher regexMatcher3 = p3.matcher(content);
 		sb = new StringBuffer(content.length());
 		while (regexMatcher3.find()) {
 			String logBody = regexMatcher3.group(1);
 			String id_val = regexMatcher3.group(2);
+			String extra = regexMatcher3.group(3);
+			if(extra == null) extra = "";
 			for(int i=0; i<id_list.size(); i++){
 				if(id_list.get(i).equals(id_val.substring(4))){
-					regexMatcher3.appendReplacement(sb, "logger.log("+logBody+", \""+new_id_list.get(i)+"\")");
+					regexMatcher3.appendReplacement(sb, "logger.log("+logBody+", \""+new_id_list.get(i)+"\""+extra+");");
 				}
 			}
 		}
