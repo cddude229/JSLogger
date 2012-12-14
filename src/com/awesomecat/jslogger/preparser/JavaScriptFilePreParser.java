@@ -47,16 +47,31 @@ public class JavaScriptFilePreParser {
 			output = regexMatcher.group(1);
 		}
 		if(output.equals("") && str_id.equals("@valid-duration")){
-			output = JavaScriptLogger.getConfig().getString("blocks.defaultValues.valid-duration");
+			if(comment_block.toLowerCase().contains(str_id.toLowerCase())){
+				output = JavaScriptLogger.getConfig().getString("blocks.defaultValues.valid-duration");
+			}
+			else{
+			output = "";
+			}
 		}
 		if(output.equals("") && str_id.equals("@validate")){
-			output = "";
+			output="";
 		}
 		if(output.equals("") && str_id.equals("@run-once")){
-			output = JavaScriptLogger.getConfig().getString("blocks.defaultValues.run-once");
+			if(comment_block.toLowerCase().contains(str_id.toLowerCase())){
+				output = JavaScriptLogger.getConfig().getString("blocks.defaultValues.run-once");
+			}
+			else{
+			output = "";
+			}
 		}
 		if(output.equals("") && str_id.equals("@window-size")){
-			output = JavaScriptLogger.getConfig().getString("blocks.defaultValues.window-size");
+			if(comment_block.toLowerCase().contains(str_id.toLowerCase())){
+				output = JavaScriptLogger.getConfig().getString("blocks.defaultValues.window-size");
+			}
+			else{
+			output = "";
+			}
 		}
 		if(output.equals("") && str_id.equals("@id")){
 			output = "";
@@ -92,7 +107,7 @@ public class JavaScriptFilePreParser {
 			boolean run_once_bool;
 			int wind_size_int;
 			if (!PreParserHelper.validRegularExpression(express)){
-				continue;
+				System.out.println(run_once);			continue;
 			}
 			if (val_dur.equals("") || express.equals("") || run_once.equals("")
 					|| id_val.equals("") || window_size.equals("")
@@ -126,19 +141,24 @@ public class JavaScriptFilePreParser {
 		//update new_content
 		// TODO: @Aaron: Make this only replace inside a logger.log() call, instead of generically throughout the file
 		Pattern p3 = Pattern.compile(
-//				"logger.log\\(.*,[\\s\\t]*" +
-				"\"(\\$id=[^\\s\\t]+)\"\\)", Pattern.DOTALL);
+				"logger\\.log\\((.*?),[\\s\\t^\\n]*? " +
+				"\"(\\$id=[^\\s\\t]+)\"\\);", Pattern.DOTALL);
 		Matcher regexMatcher3 = p3.matcher(content);
+		sb = new StringBuffer(content.length());
 		while (regexMatcher3.find()) {
-			String id_val = regexMatcher3.group(1);
+			String logBody = regexMatcher3.group(1);
+			String id_val = regexMatcher3.group(2);
 			for(int i=0; i<id_list.size(); i++){
 				if(id_list.get(i).equals(id_val.substring(4))){
-					Pattern p4 = Pattern.compile("\\"+id_val, Pattern.DOTALL);
-					Matcher regexMatcher4 = p4.matcher(content);
-					content = regexMatcher4.replaceAll(new_id_list.get(i));
+					regexMatcher3.appendReplacement(sb, "logger.log("+logBody+", \""+new_id_list.get(i)+"\")");
+					System.out.println(sb.toString());
+//					Pattern p4 = Pattern.compile("\\"+id_val, Pattern.DOTALL);
+//					Matcher regexMatcher4 = p4.matcher(content);
+//					content = regexMatcher4.replaceAll(new_id_list.get(i));
 				}
 			}
 		}
+		content = regexMatcher3.appendTail(sb).toString();
 		return content;
 	}
 
