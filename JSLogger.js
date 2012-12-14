@@ -1,7 +1,11 @@
 var Logger = function(url){
     return {
         log: function(message, logid, customCallBack){
-            customCallBack = customCallBack || function(){};
+            if(typeof customCallBack == "function"){
+                customCallBack = customCallBack(message, logid);
+            } else {
+                customCallBack = function(){};
+            }
             $.ajax({
                 type: 'GET',
                 url: url,
