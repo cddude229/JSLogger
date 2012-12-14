@@ -1,9 +1,7 @@
 package com.awesomecat.jslogger;
 
-import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Calendar;
 
 public class RateLimiter {
@@ -34,6 +32,8 @@ public class RateLimiter {
 	private final Map<Integer, RateDataSet> dataList;
 	
 	private final int pastMinutesToKeep = 5; // TODO: @Chris: Make this load from configuration
+	private final int dataLimit = 0; // TODO: @Chris: Make this load from configuration
+	private final int logsLimit = 0; // TODO: @Chris: Make this load from configuration
 	
 	public RateLimiter(){
 		logsList = new HashMap<Integer, RateDataSet>();
@@ -62,7 +62,29 @@ public class RateLimiter {
 	 */
 	public boolean isUserLimited(int sessionId){
 		// TODO: @Chris: Implement rate limiting the user
-		return false;
+		int currentData = dataOverLastXMinutes(dataList, pastMinutesToKeep, sessionId);
+		int currentLogs = dataOverLastXMinutes(logsList, pastMinutesToKeep, sessionId);
+		return currentData >= dataLimit || currentLogs >= logsLimit;
+	}
+	
+	/**
+	 * Determines the amount of data in dataSet used over the last X minutes by user identifier by sessionId
+	 * @param dataSet The dataSet to examine.
+	 * @param x The last x minutes to consider. 0 returns current minute only
+	 * @param sessionId How we're identifying the user. Do not use static session ID
+	 * @return
+	 */
+	private int dataOverLastXMinutes(Map<Integer, RateDataSet> dataSet, int x, int sessionId){
+		assert(x >= 0 && sessionId >= 0);
+		int currentMinute = handleRollover();
+		int currentData = 0;
+		for(int i=0;i<=x;i++){
+			if(dataSet.containsKey(currentMinute)){
+				RateDataSet data = dataSet.get(currentMinute);
+				currentData += data.getUserUsage(sessionId);
+			}
+		}
+		return currentData / (x+1);
 	}
 
 	private int lastMinuteHandled = -1;
@@ -71,6 +93,7 @@ public class RateLimiter {
 	 * @return The new minute to use
 	 */
 	private int handleRollover(){
+		// TODO: Needs to clear old minutes outside of the current scope
 		int newMinute = getCurrentMinute();
 		if(newMinute != lastMinuteHandled){
 			// Updated minute.  Clear newMinute before writing to it
@@ -96,5 +119,4 @@ public class RateLimiter {
 	public static int getCurrentMinute(){
 		return Calendar.getInstance().get(Calendar.MINUTE);
 	}
-
 }
