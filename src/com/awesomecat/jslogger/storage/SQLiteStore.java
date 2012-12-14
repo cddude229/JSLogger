@@ -9,8 +9,7 @@ import java.sql.SQLException;
 import com.awesomecat.jslogger.JavaScriptLogger;
 
 public class SQLiteStore extends AbstractStore {
-	Connection connection;
-	Statement statement;
+	Connection connection = null;
 	public SQLiteStore() {
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -18,12 +17,11 @@ public class SQLiteStore extends AbstractStore {
 			throw new RuntimeException("Could not find org.sqlite.JDBC controller.");
 		}
 
-		Connection connection = null;
 		try {
 			// create a database connection
 			connection = DriverManager
 					.getConnection("jdbc:sqlite:"+JavaScriptLogger.getConfig().getString("databaseFile"));
-			statement = connection.createStatement();
+			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30); // set timeout to 30 sec.
 			statement.executeUpdate("CREATE TABLE if not exists Expressions "
 					+ "(id INTEGER NOT NULL, " + "validDuration INTEGER, "
@@ -37,12 +35,14 @@ public class SQLiteStore extends AbstractStore {
 			statement.executeUpdate("CREATE TABLE if not exists Sessions "
 					+ "(id INTEGER NOT NULL, " + "type INTEGER, "
 					+ "value VARCHAR(50), " + "PRIMARY KEY (id)) ");
-			deleteExpiredAssociatedIds();
+			statement.close();
 		} catch (SQLException e) {
 			// if the error message is "out of memory",
 			// it probably means no database file is found
 			System.err.println(e.getMessage());
 		}
+
+		deleteExpiredAssociatedIds();
 	}
 
 	@Override
@@ -54,6 +54,7 @@ public class SQLiteStore extends AbstractStore {
 		int run_once_int = 0;
 		int wind_size = 2;
 		try {
+			Statement statement = connection.createStatement();
 			rs = statement.executeQuery("SELECT * from Expressions "
 					+ "WHERE id=" + id);
 			while (rs.next()) {
@@ -64,6 +65,8 @@ public class SQLiteStore extends AbstractStore {
 				wind_size = rs.getInt("windowSize");
 
 			}
+			rs.close();
+			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -79,17 +82,18 @@ public class SQLiteStore extends AbstractStore {
 		int wind_size = expression.windowSize;
 		int out_id = -999;
 		try {
+			Statement statement = connection.createStatement();
 			ResultSet rs = statement.executeQuery("SELECT * from Expressions WHERE "
 					+ "validDuration=" + val_dur + " AND " + "expression="
 					+ "'" + express + "'" + " AND " + "runOnce=" + run_once_int
 					+ " AND " + "windowSize=" + wind_size);
 			if (!rs.isBeforeFirst()) {
-				// System.out.println("No data");
 				statement.executeUpdate("INSERT into Expressions VALUES("
 						+ "NULL" + "," + expression.validDuration + ","
 						+ Expression.getCurrentTime() + "," + "'"
 						+ expression.expression + "'" + "," + run_once_int
 						+ "," + expression.windowSize + ")");
+				rs.close();
 				rs = null;
 				rs = statement.executeQuery("SELECT last_insert_rowid() as id from Expressions");
 				while (rs.next()) {
@@ -101,6 +105,8 @@ public class SQLiteStore extends AbstractStore {
 					return out_id;
 				}
 			}
+			rs.close();
+			statement.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -113,13 +119,14 @@ public class SQLiteStore extends AbstractStore {
 		int type_int = type.ordinal();
 		int out_id = -999;
 		try {
+			Statement statement = connection.createStatement();
 			ResultSet rs = statement.executeQuery("SELECT * from Sessions WHERE "
 					+ "type=" + type_int + " AND " + "value=" + "'" + value
 					+ "'");
 			if (!rs.isBeforeFirst()) {
-				// System.out.println("No data");
 				statement.executeUpdate("INSERT into Sessions VALUES(" + "NULL"
 						+ "," + type_int + "," + "'" + value + "'" + ")");
+				rs.close();
 				rs = null;
 				rs = statement.executeQuery("SELECT last_insert_rowid() as id from Sessions");
 				while (rs.next()) {
@@ -131,6 +138,8 @@ public class SQLiteStore extends AbstractStore {
 					return out_id;
 				}
 			}
+			rs.close();
+			statement.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -144,6 +153,7 @@ public class SQLiteStore extends AbstractStore {
 		long creationTime;
 		String ass_id;
 		try {
+			Statement statement = connection.createStatement();
 			ResultSet rs = statement.executeQuery("SELECT * from AssociatedId LEFT JOIN Expressions" +
 					" ON AssociatedId.expressionId=Expressions.id");
 			while (rs.next()) {
@@ -156,6 +166,8 @@ public class SQLiteStore extends AbstractStore {
 					deleteAssociatedId(ass_id);
 				}
 			}
+			rs.close();
+			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -164,8 +176,10 @@ public class SQLiteStore extends AbstractStore {
 	@Override
 	public void deleteAssociatedId(String id) {
 		try {
+			Statement statement = connection.createStatement();
 			statement.executeUpdate("DELETE FROM AssociatedId " + "WHERE associatedId ="
 					+ "'"+id+"'");
+			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -178,12 +192,15 @@ public class SQLiteStore extends AbstractStore {
 		String[] s = new String[windowSize];
 		int counter = 0;
 		try {
+			Statement statement = connection.createStatement();
 			rs = statement.executeQuery("SELECT * from AssociatedId WHERE "
 					+ "sessionId=" + sessionId + " AND " + "expressionId=" + expressionId);
 			while (rs.next() && counter<windowSize) {
 				s[counter++] = rs.getString("associatedId");
 				if(counter == windowSize) return s;
 			}
+			rs.close();
+			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -206,8 +223,10 @@ public class SQLiteStore extends AbstractStore {
 		String out_string = ass_id;
 		long creationTime = (sessionId == staticSessionId?Long.MAX_VALUE:java.util.Calendar.getInstance().getTimeInMillis());
 		try {
+			Statement statement = connection.createStatement();
 			statement.executeUpdate("INSERT into AssociatedId VALUES(" + "'"+ass_id+"'"
 					+ "," + sessionId + "," + expressionId + ","+creationTime+")");
+			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -216,13 +235,13 @@ public class SQLiteStore extends AbstractStore {
 
 	@Override
 	public void deleteOldestAssociatedId(int sessionId, int expressionId) {
-		System.out.println(sessionId);
-		System.out.println(staticSessionId);
 		if(sessionId == staticSessionId) return;
 		try {
+			Statement statement = connection.createStatement();
 			statement.executeUpdate("delete from AssociatedId where " +
 					"creationTimeA = (select min([creationTimeA]) from AssociatedId where sessionId = '"+sessionId+"' AND expressionId = '"+expressionId+"')" + 
 					" AND sessionId = '"+sessionId+"' AND expressionId = '"+expressionId+"'");
+			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -238,11 +257,14 @@ public class SQLiteStore extends AbstractStore {
 		int expr_id = -999;
 		try {
 			ResultSet rs = null;
+			Statement statement = connection.createStatement();
 			rs = statement.executeQuery("SELECT * from AssociatedId WHERE "
 					+ "associatedId=" + "'" + associatedId + "'");;
 			while (rs.next()) {
-				 expr_id= rs.getInt("expressionId");
+				 expr_id = rs.getInt("expressionId");
 			}
+			rs.close();
+			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

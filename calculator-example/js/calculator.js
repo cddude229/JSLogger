@@ -2,7 +2,7 @@
  * @valid-duration 3
  * @run-once false
  * @window-size 1
- * @validate /^could not eval: [A-Za-z0-9\+\-\*]+$/sim
+ * @validate /^could not eval: [A-Za-z0-9\-]{1,5}$/sim
  * @id error
  #**/
 
@@ -10,7 +10,7 @@
  * @valid-duration 3
  * @run-once false
  * @window-size 1
- * @validate /^could not eval: [A-Za-z0-9\+\-\*]+$/sim
+ * @validate /^user entered: [A-Za-z0-9\-]{1,5}$/sim
  * @id userInput
  #**/
 

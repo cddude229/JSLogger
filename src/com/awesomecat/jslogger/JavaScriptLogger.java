@@ -12,8 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.XMLConfiguration;
+
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 
 import com.awesomecat.jslogger.mapper.SessionMapper;
 import com.awesomecat.jslogger.mapper.StaticMapper;
@@ -26,7 +30,7 @@ import com.awesomecat.jslogger.storage.SQLiteStore;
 import com.awesomecat.jslogger.storage.SessionType;
 
 public class JavaScriptLogger {
-    private static Logger logger = Logger.getLogger("jslogger");
+    private static Logger logger = Logger.getLogger("jsLogger");
     private static AbstractStore store = (getConfig().getBoolean("persistData")?new SQLiteStore():new HashMapStore());
     private static Level jsLogLevel = Level.toLevel(getConfig().getString("jsLogLevel"));
     private static Configuration config = null;
@@ -97,6 +101,7 @@ public class JavaScriptLogger {
     	return handleLogging(message, associatedId, sessionId);
     }
 
+    private static boolean runOnce = false;
     public static boolean handleLogging(String message, String associatedId, int sessionId){
         // No null values allowed
     	if(message == null || associatedId == null) return false;
@@ -116,11 +121,29 @@ public class JavaScriptLogger {
     	}
    
     	// At this point, the associated ID has been matched.  Let's see if the message matches the regular expression!
+		System.out.println("Good 1");
     	Pattern p = buildPatternFromExpression(e.expression);
+		System.out.println("Good 1");
     	Matcher m = p.matcher(message);
+		System.out.println("Good 1");
     	if(!m.find()) return false; // No valid match
     	
     	// Ok, lastly, let's log the message.
+    	if(!runOnce){
+    		// This would be an issue with making this class static.  Oh wells
+    		System.out.println("Good 1");
+    		Layout l = new PatternLayout(getConfig().getString("logPattern"));
+    		System.out.println("Good 2");
+    		try {
+				logger.addAppender(new FileAppender(l, getConfig().getString("logFile")));
+	    		System.out.println("Good 3");
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+    		System.out.println("Good 4");
+    		runOnce = true;
+    		System.out.println("Good 5");
+    	}
     	logger.log(jsLogLevel, message);
     	rateLimiter.addData(sessionId, 1, message.length());
     	

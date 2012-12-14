@@ -16,4 +16,6 @@
 		<logsLimit>500</logsLimit> <!-- in logs/minute -->
 	</rateLimit>
 	<jsLogLevel>error</jsLogLevel>
+	<logFile>js.log</logFile>
+	<logPattern>%d %-5p  [%c{1}] %m %n</logPattern>
 </jsLogger>

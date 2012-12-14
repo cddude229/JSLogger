@@ -40,7 +40,7 @@ public class JavaScriptFilePreParser {
 		return evaluateFile(file, mapper, false);
 	}
 	private static String extract(String str_id, String comment_block){
-		Pattern p = Pattern.compile("[\\s\\t]*\\* "+str_id+"[\\s\\t]([^\\s\\t]+\\n)", Pattern.DOTALL);
+		Pattern p = Pattern.compile("[\\s\\t]*\\*[\\s\\t]*"+str_id+"[\\s\\t]*([^\\s\\t].*?\\n)", Pattern.DOTALL);
 		Matcher regexMatcher = p.matcher(comment_block);
 		String output = "";
 		while (regexMatcher.find()) {
