@@ -31,9 +31,9 @@ public class RateLimiter {
 	private final Map<Integer, RateDataSet> logsList;
 	private final Map<Integer, RateDataSet> dataList;
 	
-	private final int pastMinutesToKeep = JavaScriptLogger.getConfig().getInt("rateLimit.pastMinutesToKeep");
-	private final int dataLimit = JavaScriptLogger.getConfig().getInt("rateLimit.dataLimit");
-	private final int logsLimit = JavaScriptLogger.getConfig().getInt("rateLimit.logsLimit");
+	public static final int pastMinutesToKeep = JavaScriptLogger.getConfig().getInt("rateLimit.pastMinutesToKeep");
+	public static final int dataLimit = JavaScriptLogger.getConfig().getInt("rateLimit.dataLimit");
+	public static final int logsLimit = JavaScriptLogger.getConfig().getInt("rateLimit.logsLimit");
 	
 	public RateLimiter(){
 		logsList = new HashMap<Integer, RateDataSet>();
