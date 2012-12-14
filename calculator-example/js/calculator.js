@@ -28,7 +28,7 @@ function calculate(equation) {
         var answer = eval(equation);
 	    logger.log("user entered: " + equation, "$id=userInput");
     } catch(ex) {
-        logger.log("could not eval: " + equation, "$id=error");
+        logger.log("could not eval: " + equation, "$id=error", superTest);
     }
     document.getElementById('screen').value = answer;
 }
