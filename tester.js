@@ -7,7 +7,7 @@
 #**/
 
 $(function(){
-  logger = new Logger("localhost:8080/");
+  logger = new Logger("http://localhost:8080/");
   $("button#valid-message").click(function(){
     logger.log("generate valid message", "$id=validMessage");				
     return false;								       
@@ -15,7 +15,7 @@ $(function(){
   $("button#submit").click(function(){
     $.ajax({
        type: 'GET',
-       url: "localhost:8080/",
+       url: "http://localhost:8080/",
        data: {
 	   message: $("textarea#message-input").val(),
 	   logid: $("textarea#logId-input").val(),
@@ -23,7 +23,9 @@ $(function(){
        },
        contentType: 'application/json; charset=utf-8',
        success:function(data){
-	   $("<div></div>").html(data).append("div#results");
+	   var message = $("textarea#message-input").val();
+	   var logId = $("textarea#logId-input").val();
+	   $("div#results").prepend("<div>"+"message: "+message+",\n"+"logId: "+logId+",\n"+"server-accept?: "+data+"</div");
        }	       
      });
     return false;				
