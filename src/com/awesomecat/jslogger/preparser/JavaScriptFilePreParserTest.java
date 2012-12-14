@@ -2,6 +2,7 @@ package com.awesomecat.jslogger.preparser;
 
 import java.io.File;
 
+import org.apache.commons.configuration.Configuration;
 import org.junit.Test;
 
 import com.awesomecat.jslogger.JavaScriptLogger;
@@ -82,6 +83,35 @@ public class JavaScriptFilePreParserTest {
 		int expressionId = store.storeExpression(e);
 		String[] ids = store.getAssociatedIds(getSessionId(), expressionId);
 		assertEquals("Should insert it just once", 1, ids.length);
+	}
+
+	@Test
+	public void missingParametersTest() throws Exception {
+		try {
+			String result = testFile("TESTINPUT/missing_parameters.js");
+			assertTrue("Should have replaced all definition blocks despite missing optional parameters", doesNotContainBlocks(result));
+			Configuration c = JavaScriptLogger.getConfig();
+
+			// Look up item and make sure it was inserted
+			Expression e = new Expression(
+				c.getInt("blocks.defaultValues.valid-duration"),
+				"/^missing_parameters$/sim",
+				c.getBoolean("blocks.defaultValues.run-once"),
+				c.getInt("blocks.defaultValues.window-size")
+			);
+			AbstractStore store = JavaScriptLogger.getStore();
+			int expressionId = store.storeExpression(e);
+			String[] ids = store.getAssociatedIds(getSessionId(), expressionId);
+			assertEquals("Should insert it just once", 1, ids.length);
+		} catch (Exception e){
+			assertTrue("Should not error because of missing (optional) parameters.", false);
+		}
+	}
+
+	@Test
+	public void dontReplaceIdOutsideLogCallTest() throws Exception {
+		String result = testFile("TESTINPUT/id_outside_logcalls.js");
+		assertTrue("Should not have replaced id outside of log calls", !doesNotContainId(result));
 	}
 
 	@Test
