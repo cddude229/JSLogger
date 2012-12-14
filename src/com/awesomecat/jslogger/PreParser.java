@@ -71,7 +71,7 @@ public class PreParser {
     		  return false;
     	}
     	int flag_index=0;
-    	ArrayList<String> flags = new ArrayList();
+    	ArrayList<String> flags = new ArrayList<String>();
     	for(int i= (re.length()-1);i>=0; i-- ){
     		String cur_char = re.substring(i,i+1);
     		System.out.println("cur_char: "+cur_char); //DEBUG
