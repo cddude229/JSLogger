@@ -19,7 +19,8 @@ public final class PreParseFilter implements Filter {
 		String path = getPath(req);
 
 		// See if it's a JS file and then pre-parse
-		if(req.getParameter("noparse") == null && path.length() > 4 && path.substring(path.length()-3).toLowerCase().equals(".js")){
+		if(req.getParameter("noparse") == null && ((path.length() > 4 && path.substring(path.length()-3).toLowerCase().equals(".js"))
+				|| (path.length() > 6 && path.substring(path.length()-5).toLowerCase().equals(".html")))){
 			File f = new File(path);
 			SessionMapper mapper = JavaScriptLogger.buildSessionMapper(
 				JavaScriptLogger.getSessionId(req)
