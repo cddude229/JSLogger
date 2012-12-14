@@ -1,4 +1,4 @@
-package com.awesomecat.jslogger;
+package com.awesomecat.jslogger.preparser;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -6,6 +6,8 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.awesomecat.jslogger.JavaScriptLogger;
+import com.awesomecat.jslogger.mapper.Mapper;
 import com.awesomecat.jslogger.storage.Expression;
 
 public class JavaScriptFilePreParser {

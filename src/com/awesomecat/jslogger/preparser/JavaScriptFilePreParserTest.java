@@ -1,9 +1,11 @@
-package com.awesomecat.jslogger;
+package com.awesomecat.jslogger.preparser;
 
 import java.io.File;
 
 import org.junit.Test;
 
+import com.awesomecat.jslogger.JavaScriptLogger;
+import com.awesomecat.jslogger.mapper.SessionMapper;
 import com.awesomecat.jslogger.storage.AbstractStore;
 import com.awesomecat.jslogger.storage.Expression;
 import com.awesomecat.jslogger.storage.SessionType;

@@ -15,6 +15,10 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import com.awesomecat.jslogger.mapper.SessionMapper;
+import com.awesomecat.jslogger.mapper.StaticMapper;
+import com.awesomecat.jslogger.preparser.JavaScriptFilePreParser;
+import com.awesomecat.jslogger.preparser.PreParserHelper;
 import com.awesomecat.jslogger.storage.AbstractStore;
 import com.awesomecat.jslogger.storage.Expression;
 import com.awesomecat.jslogger.storage.HashMapStore;
@@ -156,7 +160,7 @@ public class JavaScriptLogger {
     	for(String f : flags.split("")){
     		arrayListFlags.add(f);
     	}
-    	int flagsInt = PreParser.convertFlagsToConstants(arrayListFlags);
+    	int flagsInt = PreParserHelper.convertFlagsToConstants(arrayListFlags);
 
     	// Finish strong
     	return Pattern.compile(p, flagsInt);

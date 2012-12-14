@@ -6,9 +6,9 @@ import java.io.IOException;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 
-import com.awesomecat.jslogger.JavaScriptFilePreParser;
 import com.awesomecat.jslogger.JavaScriptLogger;
-import com.awesomecat.jslogger.SessionMapper;
+import com.awesomecat.jslogger.mapper.SessionMapper;
+import com.awesomecat.jslogger.preparser.JavaScriptFilePreParser;
 
 
 
