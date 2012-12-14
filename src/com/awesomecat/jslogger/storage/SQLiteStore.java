@@ -11,8 +11,12 @@ import com.awesomecat.jslogger.JavaScriptLogger;
 public class SQLiteStore extends AbstractStore {
 	Connection connection;
 	Statement statement;
-	public SQLiteStore() throws ClassNotFoundException {
-		Class.forName("org.sqlite.JDBC");
+	public SQLiteStore() {
+		try {
+			Class.forName("org.sqlite.JDBC");
+		} catch (ClassNotFoundException e1) {
+			throw new RuntimeException("Could not find org.sqlite.JDBC controller.");
+		}
 
 		Connection connection = null;
 		try {
