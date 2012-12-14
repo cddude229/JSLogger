@@ -135,6 +135,25 @@ public class JavaScriptFilePreParserTest {
 		}
 	}
 	
+	//ADDED
+	@Test
+	public void substringIdTest() throws Exception {
+		String result = testFile("TESTINPUT/substring_id.js");
+		assertTrue("Should have replaced all ids", doesNotContainId(result));
+		assertTrue("Should have replaced all definition blocks", doesNotContainBlocks(result));
+
+		// Ok, make sure each item was added to the store only once
+		AbstractStore store = JavaScriptLogger.getStore();
+		Expression e1 = new Expression(5, "/^substring_id1$/sim", true, 2);
+		Expression e2 = new Expression(5, "/^substring_id2$/sim", true, 2);
+		int expressionId1 = store.storeExpression(e1);
+		int expressionId2 = store.storeExpression(e2);
+		String[] ids1 = store.getAssociatedIds(getSessionId(), expressionId1);
+		String[] ids2 = store.getAssociatedIds(getSessionId(), expressionId2);
+		assertEquals("Should insert it just once", 1, ids1.length);
+		assertEquals("Should insert it just once", 1, ids2.length);
+	}
+	
 	@Test
 	public void shouldErrorTests() throws Exception {
 		File file = new File("ASDFASDFASDF/file_does_not_exist.js");
