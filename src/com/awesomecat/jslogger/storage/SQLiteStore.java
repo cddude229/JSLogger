@@ -105,8 +105,6 @@ public class SQLiteStore extends AbstractStore {
 						+ expression.expression + "'" + "," + run_once_int
 						+ "," + expression.windowSize + ")");
 				rs = null;
-				// TODO: This is a race condition, consider fixing this
-				//rs = statement.executeQuery("SELECT MAX(id) AS max_id FROM Expressions");
 				rs = statement.executeQuery("SELECT last_insert_rowid() as id from Expressions");
 				while (rs.next()) {
 					out_id = rs.getInt("id");
@@ -137,7 +135,6 @@ public class SQLiteStore extends AbstractStore {
 				statement.executeUpdate("INSERT into Sessions VALUES(" + "NULL"
 						+ "," + type_int + "," + "'" + value + "'" + ")");
 				rs = null;
-				// TODO: This is a race condition, consider fixing this
 				rs = statement.executeQuery("SELECT last_insert_rowid() as id from Sessions");
 				while (rs.next()) {
 					out_id = rs.getInt("id");

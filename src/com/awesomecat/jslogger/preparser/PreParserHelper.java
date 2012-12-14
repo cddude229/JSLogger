@@ -74,14 +74,11 @@ public class PreParserHelper {
     	ArrayList<String> flags = new ArrayList<String>();
     	for(int i= (re.length()-1);i>=0; i-- ){
     		String cur_char = re.substring(i,i+1);
-    		System.out.println("cur_char: "+cur_char); //DEBUG
     		if(cur_char.equals("/")){
     			flag_index = i;
-    			System.out.println("break");
     			break;
     		}
     		if(!isValidFlag(cur_char)){
-    			System.out.println("!isValidFlag(cur_char)");
     			return false;
     		}
     		else{
@@ -93,19 +90,15 @@ public class PreParserHelper {
     		return false;
     	}
     	String flagless = re.substring(0, flag_index+1);
-    	System.out.println("flagless: "+flagless);
-    	System.out.println(flagless.substring(0,1));
     	if(!flagless.substring(0,1).equals("/") 
     		|| !flagless.substring(flagless.length()-1,flagless.length()).equals("/")
     		|| flagless.substring(flagless.length()-2,flagless.length()-1).equals("\\")){
-    		System.out.println("flagless");
     		return false;
     	}
     	String no_slash = flagless.substring(1,flagless.length()-1); //is this right?
     	if(!no_slash.substring(0,1).equals("^") 
     		|| !no_slash.substring(no_slash.length()-1,no_slash.length()).equals("$")
     		|| no_slash.substring(no_slash.length()-2,no_slash.length()-1).equals("\\")){
-    		System.out.println("no_slash");
     		return false;
     	}
     	String no_anchor = no_slash.substring(1,no_slash.length()-1); //is this right?
@@ -117,18 +110,15 @@ public class PreParserHelper {
     		}
     		
     		if((cur_char.equals("+") || cur_char.equals("*")) && !before_char.equals("\\")){
-    			System.out.println("no_anchor");
     			return false;
     		}
     		if(cur_char.equals("{") && !before_char.equals("\\")){
     			//2 bad cases: {,} and {#,}
     			if(no_anchor.substring(i,i+3).equals("{,}")){
-    				System.out.println("no_anchor.substring(i,i+3) == \"{,}\"");
     				return false;
     			}
     			Pattern p = Pattern.compile("\\{\\d+,\\}");
     			if(matchesPattern(p,no_anchor.substring(i))){ //might be slow
-    				System.out.println("matchesPattern(p,no_anchor.substring(i))");
     				return false;
     			}
     		}

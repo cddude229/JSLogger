@@ -40,7 +40,7 @@ public class JavaScriptFilePreParser {
 		return evaluateFile(file, mapper, false);
 	}
 	private static String extract(String str_id, String comment_block){
-		Pattern p = Pattern.compile("[\\s\\t]*\\* "+str_id+"[\\s\\t]([^\\s\\t]+)", Pattern.DOTALL);
+		Pattern p = Pattern.compile("[\\s\\t]*\\* "+str_id+"[\\s\\t]([^\\s\\t]+\\n)", Pattern.DOTALL);
 		Matcher regexMatcher = p.matcher(comment_block);
 		String output = "";
 		while (regexMatcher.find()) {
@@ -72,35 +72,50 @@ public class JavaScriptFilePreParser {
 	 * @return
 	 */
 	public static String evaluateString(String content, Mapper mapper, boolean staticFile){
-		ArrayList<String> comment_blocks = new ArrayList<String>();
 		//grabs comment values
-		Pattern p1 = Pattern.compile("/\\*\\*#(.*?)#\\*\\*/", Pattern.DOTALL);
-		Matcher regexMatcher1 = p1.matcher(content);
-		while (regexMatcher1.find()) {
-			comment_blocks.add(regexMatcher1.group(1));
-		} 
-		//deletes comments
-		Pattern p2 = Pattern.compile("/\\*\\*#.*?#\\*\\*/", Pattern.DOTALL);
-		Matcher regexMatcher2 = p2.matcher(content);
-		String new_content = regexMatcher2.replaceAll("");
-		//parses comments
 		ArrayList<Integer> val_dur_list = new ArrayList<Integer>();
 		ArrayList<String> express_list = new ArrayList<String>();
 		ArrayList<Boolean> run_once_list = new ArrayList<Boolean>();
 		ArrayList<Integer> window_list = new ArrayList<Integer>();
 		ArrayList<String> id_list = new ArrayList<String>();
-		for(int i=0; i<comment_blocks.size(); i++){
-			// TODO: @Aaron: Make this pass JavaScriptFilePreParserTest. It currently fails when these are invalid
-			// TODO: @Aaron: Validate that the @validate is valid using the parser you wrote before
-			// If it is invalid, do not add it and do not remove the block
-			// By leaving it in, it's easier for a user to debug that their thing did not parse correctly
-			String comment_block = comment_blocks.get(i);
-			val_dur_list.add(Integer.parseInt(extract("@valid-duration", comment_block).trim()));
-			express_list.add(extract("@validate", comment_block).trim());
-			run_once_list.add(!staticFile && Boolean.parseBoolean(extract("@run-once", comment_block).trim())); // Can't be run-once inside a static file;
-			window_list.add(Integer.parseInt(extract("@window-size", comment_block).trim()));
-			id_list.add(extract("@id", comment_block).trim());
-		}
+		Pattern p1 = Pattern.compile("(/\\*\\*#.*?#\\*\\*/)", Pattern.DOTALL);
+		Matcher regexMatcher1 = p1.matcher(content);
+		StringBuffer sb = new StringBuffer(content.length());
+		while (regexMatcher1.find()) {
+			String comment_block = regexMatcher1.group(1);
+			String val_dur = extract("@valid-duration", comment_block).trim();
+			String express = extract("@validate", comment_block).trim();
+			String run_once = extract("@run-once", comment_block).trim();
+			String id_val = extract("@id", comment_block).trim();
+			String window_size = extract("@window-size", comment_block).trim();
+			int val_dur_int;
+			boolean run_once_bool;
+			int wind_size_int;
+			if (!PreParserHelper.validRegularExpression(express)){
+				continue;
+			}
+			if (val_dur.equals("") || express.equals("") || run_once.equals("")
+					|| id_val.equals("") || window_size.equals("")
+					|| !(run_once.equals("true") || run_once.equals("false"))){
+				continue;
+			}
+			try{
+				val_dur_int = Integer.parseInt(val_dur);
+				run_once_bool = Boolean.parseBoolean(run_once);
+				wind_size_int = Integer.parseInt(window_size);
+				
+			}
+			catch(Exception e){
+				continue;
+			}
+			val_dur_list.add(Integer.parseInt(val_dur));
+			express_list.add(express);
+			run_once_list.add(!staticFile && Boolean.parseBoolean(run_once)); // Can't be run-once inside a static file;
+			window_list.add(Integer.parseInt(window_size));
+			id_list.add(id_val);
+			regexMatcher1.appendReplacement(sb, "");
+		} 
+		content = regexMatcher1.appendTail(sb).toString();
 		
 		ArrayList<String> new_id_list = new ArrayList<String>();
 		for(int i=0; i<id_list.size(); i++){
@@ -110,19 +125,21 @@ public class JavaScriptFilePreParser {
 		}
 		//update new_content
 		// TODO: @Aaron: Make this only replace inside a logger.log() call, instead of generically throughout the file
-		Pattern p3 = Pattern.compile("\"(\\$id=[^\\s\\t]+)\"\\)", Pattern.DOTALL);
-		Matcher regexMatcher3 = p3.matcher(new_content);
+		Pattern p3 = Pattern.compile(
+//				"logger.log\\(.*,[\\s\\t]*" +
+				"\"(\\$id=[^\\s\\t]+)\"\\)", Pattern.DOTALL);
+		Matcher regexMatcher3 = p3.matcher(content);
 		while (regexMatcher3.find()) {
 			String id_val = regexMatcher3.group(1);
 			for(int i=0; i<id_list.size(); i++){
 				if(id_list.get(i).equals(id_val.substring(4))){
 					Pattern p4 = Pattern.compile("\\"+id_val, Pattern.DOTALL);
-					Matcher regexMatcher4 = p4.matcher(new_content);
-					new_content = regexMatcher4.replaceAll(new_id_list.get(i));
+					Matcher regexMatcher4 = p4.matcher(content);
+					content = regexMatcher4.replaceAll(new_id_list.get(i));
 				}
 			}
 		}
-		return new_content;
+		return content;
 	}
 
 }
