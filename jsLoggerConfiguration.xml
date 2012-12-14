@@ -15,4 +15,5 @@
 		<dataLimit>5</dataLimit> <!--  in kb/minute -->
 		<logsLimit>500</logsLimit> <!-- in logs/minute -->
 	</rateLimit>
+	<jsLogLevel>error</jsLogLevel>
 </jsLogger>

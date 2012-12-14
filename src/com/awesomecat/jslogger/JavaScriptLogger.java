@@ -28,7 +28,7 @@ import com.awesomecat.jslogger.storage.SessionType;
 public class JavaScriptLogger {
     private static Logger logger = Logger.getLogger("jslogger");
     private static AbstractStore store = (getConfig().getBoolean("persistData")?new SQLiteStore():new HashMapStore());
-    private static Level jsLogLevel = Level.ERROR;
+    private static Level jsLogLevel = Level.toLevel(getConfig().getString("jsLogLevel"));
     private static Configuration config = null;
     private static RateLimiter rateLimiter = new RateLimiter();
 

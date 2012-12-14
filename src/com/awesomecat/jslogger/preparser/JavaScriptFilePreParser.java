@@ -122,10 +122,10 @@ public class JavaScriptFilePreParser {
 			catch(Exception e){
 				continue;
 			}
-			val_dur_list.add(Integer.parseInt(val_dur));
+			val_dur_list.add(val_dur_int);
 			express_list.add(express);
-			run_once_list.add(!staticFile && Boolean.parseBoolean(run_once)); // Can't be run-once inside a static file;
-			window_list.add(Integer.parseInt(window_size));
+			run_once_list.add(!staticFile && run_once_bool); // Can't be run-once inside a static file;
+			window_list.add(wind_size_int);
 			id_list.add(id_val);
 			regexMatcher1.appendReplacement(sb, "");
 		} 
@@ -138,7 +138,6 @@ public class JavaScriptFilePreParser {
 			new_id_list.add(mapper.registerExpressionAndGetAssociatedId(expression));
 		}
 		//update new_content
-		// TODO: @Aaron: Make this only replace inside a logger.log() call, instead of generically throughout the file
 		Pattern p3 = Pattern.compile(
 				"logger\\.log\\((.*?),[\\s\\t^\\n]*? " +
 				"\"(\\$id=[^\\s\\t]+)\"\\);", Pattern.DOTALL);
@@ -150,10 +149,6 @@ public class JavaScriptFilePreParser {
 			for(int i=0; i<id_list.size(); i++){
 				if(id_list.get(i).equals(id_val.substring(4))){
 					regexMatcher3.appendReplacement(sb, "logger.log("+logBody+", \""+new_id_list.get(i)+"\")");
-					System.out.println(sb.toString());
-//					Pattern p4 = Pattern.compile("\\"+id_val, Pattern.DOTALL);
-//					Matcher regexMatcher4 = p4.matcher(content);
-//					content = regexMatcher4.replaceAll(new_id_list.get(i));
 				}
 			}
 		}
