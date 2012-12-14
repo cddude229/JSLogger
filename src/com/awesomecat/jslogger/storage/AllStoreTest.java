@@ -23,10 +23,7 @@ public class AllStoreTest {
 	public void testHashMapStore() throws Exception {
 		runTestSuite(new HashMapStore());
 	}
-	
-	
-	//TODO: @Chris When SQLiteStore is done, enable this test
-	//UNCOMMENTED THS
+
 	@Test
 	public void testSQLiteStore() throws Exception {
 		runTestSuite(new SQLiteStore());

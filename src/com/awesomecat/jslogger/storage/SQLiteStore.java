@@ -3,31 +3,12 @@ package com.awesomecat.jslogger.storage;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
-// TODO: @Aaron: Implement SQLiteStore
 public class SQLiteStore extends AbstractStore {
 	Connection connection;
 	Statement statement;
-	public static void main(String[] args) {
-		SQLiteStore sqliteStore = null;
-		try {
-			sqliteStore = new SQLiteStore();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-//		Expression expression = new Expression(5, "test", true, 2);
-		//System.out.println(sqliteStore.storeExpression(expression));
-//		int expr_id = sqliteStore.storeExpression(expression);
-//		System.out.println(sqliteStore.getExpression(1));
-		//System.out.println(sqliteStore.getSessionId(SessionType.IP,"18.233.1.107"));
-//		int sess_id = sqliteStore.getSessionId(SessionType.IP,"18.233.1.107");
-//		System.out.println(sqliteStore.createAssociatedId(sess_id,expr_id));
-	}
 	public SQLiteStore() throws ClassNotFoundException {
 		Class.forName("org.sqlite.JDBC");
 
@@ -88,7 +69,6 @@ public class SQLiteStore extends AbstractStore {
 	public int storeExpression(Expression expression) {
 		int val_dur = expression.validDuration;
 		String express = expression.expression;
-		boolean run_once = expression.runOnce;
 		int run_once_int = (expression.runOnce == true) ? 1 : 0;
 		int wind_size = expression.windowSize;
 		int out_id = -999;
@@ -101,7 +81,7 @@ public class SQLiteStore extends AbstractStore {
 				// System.out.println("No data");
 				statement.executeUpdate("INSERT into Expressions VALUES("
 						+ "NULL" + "," + expression.validDuration + ","
-						+ expression.getCurrentTime() + "," + "'"
+						+ Expression.getCurrentTime() + "," + "'"
 						+ expression.expression + "'" + "," + run_once_int
 						+ "," + expression.windowSize + ")");
 				rs = null;
@@ -212,7 +192,6 @@ public class SQLiteStore extends AbstractStore {
 		try {
 			statement.executeUpdate("INSERT into AssociatedId VALUES(" + "'"+ass_id+"'"
 					+ "," + sessionId + "," + expressionId + "," +Expression.getCurrentTime()+")");
-			ResultSet rs = null;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
